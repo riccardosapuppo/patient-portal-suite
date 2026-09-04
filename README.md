@@ -36,6 +36,8 @@ It comes with five claims, and each of them can fail:
 `dotnet run --project src/Portal.Measure` prints those and exits non-zero if any
 of them stops being true. So does CI.
 
+![A patient's own list: one released, one still a draft, one that needs a code](docs/documents.png)
+
 ---
 
 ## The one idea
@@ -112,6 +114,7 @@ so.
 | `Portal.Measure` | Runs the ward through both and prints the difference. Exits non-zero when a claim stops holding. |
 | `Portal.Web` | ASP.NET Core, Razor Pages, a cookie. |
 | `Portal.Tests` | 33 checks: the archive asked directly, the portal driven over HTTP, and three that are about the shape of the code rather than what it does. |
+| `tools/screenshots.sh` | The two pictures above, taken from the running portal rather than by hand. |
 
 ### The ward is invented, and that is not a detail
 
@@ -165,6 +168,8 @@ The route read the accession from the request body and asked for a code against
 it, so a patient could be sent a code — to their own phone — for somebody else's
 study. And confirming meant finding a live challenge with those six digits,
 rather than those six digits for this patient and this document.
+
+![Asking for a code, which is good for that one document and no other](docs/code.png)
 
 Now a code is minted only after the archive has said this patient would be handed
 this document but for the second factor, and confirming returns a **receipt**

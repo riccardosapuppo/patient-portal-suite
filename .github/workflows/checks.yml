@@ -116,6 +116,25 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - name: every picture the README shows is in the repository
+        run: |
+          missing=0
+
+          # Read out of the README rather than listed here. A list in two
+          # places goes stale in one of them, and it is always the copy.
+          for picture in $(grep -o 'docs/[a-z-]*\.png' README.md | sort -u); do
+            if [ ! -f "$picture" ]; then
+              echo "The README shows $picture and it is not in the repository."
+              missing=$((missing + 1))
+            fi
+          done
+
+          if [ "$missing" -eq 0 ]; then
+            echo "Every picture the README shows is here."
+          fi
+
+          exit $missing
+
 
       - name: every project the README names exists
         run: |
