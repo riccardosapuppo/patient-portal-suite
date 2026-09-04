@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!--
+    The portal. ASP.NET Core, Razor Pages, and a cookie.
+
+    It runs on Linux, which is why the whole of this repository is checked in
+    one job: there is nothing here that needs a particular machine, and the part
+    that decides who may see what does not even need a web server.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RootNamespace>Portal.Web</RootNamespace>
+    <UserSecretsId>portal-web-invented-ward</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Portal.Store\Portal.Store.csproj" />
+  </ItemGroup>
+
+</Project>

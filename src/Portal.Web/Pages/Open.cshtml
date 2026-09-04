@@ -1,0 +1,17 @@
+@page
+@model OpenModel
+@{
+    ViewData["Title"] = "Not available";
+}
+
+<h1>Not available</h1>
+
+<p class="said">@Model.Said</p>
+
+<p>
+    @if (Model.NeedsACodeFor is { } accession)
+    {
+        <a class="open" href="/Code?id=@accession">Send me a code</a>
+    }
+    <a class="open" href="/">Back to your documents</a>
+</p>

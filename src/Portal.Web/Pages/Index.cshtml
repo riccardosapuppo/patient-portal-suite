@@ -1,0 +1,47 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Your documents";
+}
+
+<h1>Your documents</h1>
+
+@if (Model.Documents.Count == 0)
+{
+    <p class="lead">
+        There is nothing here yet. When a clinician releases a report it will
+        appear on this page.
+    </p>
+}
+else
+{
+    <p class="lead">
+        @Model.Documents.Count document@(Model.Documents.Count == 1 ? "" : "s"),
+        which are the documents recorded against your name and no others.
+    </p>
+
+    <ul class="documents">
+        @foreach (var one in Model.Documents)
+        {
+            <li>
+                <span>
+                    <span class="what">@one.Title</span><br />
+                    <span class="id">@one.Id</span>
+                </span>
+
+                @if (!one.Released)
+                {
+                    <span class="state">Not released yet — a clinician has still to sign it off.</span>
+                }
+                else if (one.Sensitive)
+                {
+                    <a class="open" href="/Code?id=@one.Id">Send me a code</a>
+                }
+                else
+                {
+                    <a class="open" href="/Open?id=@one.Id">Open</a>
+                }
+            </li>
+        }
+    </ul>
+}

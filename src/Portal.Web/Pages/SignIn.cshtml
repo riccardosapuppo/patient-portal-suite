@@ -1,0 +1,40 @@
+@page
+@model SignInModel
+@{
+    ViewData["Title"] = "Sign in";
+}
+
+<h1>Sign in</h1>
+
+<p class="lead">
+    This ward is invented, so the sign-in is too: pick a patient and use the
+    password below. What is <em>not</em> invented is what happens afterwards —
+    every page from here on can only ask the archive about the patient you
+    picked.
+</p>
+
+@if (Model.Said is not null)
+{
+    <p class="said">@Model.Said</p>
+}
+
+<form class="stack" method="post">
+    <label>
+        Patient
+        <select name="Patient" asp-for="Patient">
+            @foreach (var one in Model.Everyone)
+            {
+                <option value="@one">@one</option>
+            }
+        </select>
+    </label>
+
+    <label>
+        Password
+        <input type="password" name="Password" autocomplete="current-password" />
+    </label>
+
+    <button type="submit">Sign in</button>
+</form>
+
+<p class="state">The password for every invented patient is <code>ward</code>.</p>

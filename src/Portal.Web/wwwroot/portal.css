@@ -1,0 +1,94 @@
+/*
+    Plain, and deliberately so. A patient portal is read by people who are
+    worried, on an old phone, in a corridor.
+*/
+
+:root {
+    --ink: #171c24;
+    --quiet: #5c6675;
+    --line: #d8dde4;
+    --paper: #fbfcfd;
+    --mark: #17506b;
+    --warn: #8a5a12;
+    --warn-ground: #fdf6e6;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    padding: 0 1rem 3rem;
+    background: var(--paper);
+    color: var(--ink);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.invented {
+    margin: 0 -1rem 1.5rem;
+    padding: .55rem 1rem;
+    background: var(--warn-ground);
+    border-bottom: 1px solid #efe0bd;
+    color: var(--warn);
+    font-size: .82rem;
+}
+
+header, main, footer { max-width: 44rem; margin: 0 auto; }
+
+header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--line);
+}
+
+header form { display: flex; gap: .6rem; align-items: baseline; }
+
+.mark { color: var(--mark); font-weight: 650; text-decoration: none; letter-spacing: -.01em; }
+.as { color: var(--quiet); font-size: .85rem; }
+
+h1 { font-size: 1.4rem; margin: 1.6rem 0 .4rem; letter-spacing: -.01em; }
+h2 { font-size: 1rem; margin: 2rem 0 .5rem; }
+p.lead { color: var(--quiet); margin-top: 0; }
+
+ul.documents { list-style: none; margin: 1.2rem 0; padding: 0; }
+
+ul.documents li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem 1rem;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: .85rem 0;
+    border-bottom: 1px solid var(--line);
+}
+
+ul.documents .what { font-weight: 600; }
+ul.documents .id { color: var(--quiet); font-size: .8rem; font-family: ui-monospace, Consolas, monospace; }
+
+.state { font-size: .8rem; color: var(--quiet); }
+
+a.open, button {
+    font: inherit;
+    font-size: .88rem;
+    padding: .35rem .8rem;
+    border: 1px solid var(--line);
+    border-radius: .3rem;
+    background: #fff;
+    color: var(--mark);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a.open:hover, button:hover { border-color: var(--mark); }
+
+form.stack { display: grid; gap: .8rem; max-width: 22rem; margin: 1.4rem 0; }
+label { display: grid; gap: .3rem; font-size: .85rem; color: var(--quiet); }
+input, select { font: inherit; padding: .45rem .55rem; border: 1px solid var(--line); border-radius: .3rem; }
+
+.said { padding: .7rem .9rem; border-left: 3px solid var(--warn); background: var(--warn-ground); color: var(--warn); }
+.code { font-family: ui-monospace, Consolas, monospace; font-size: 1.2rem; letter-spacing: .18em; }
+
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); color: var(--quiet); font-size: .82rem; }

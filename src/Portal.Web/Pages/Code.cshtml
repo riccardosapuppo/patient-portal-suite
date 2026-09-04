@@ -1,0 +1,39 @@
+@page
+@model CodeModel
+@{
+    ViewData["Title"] = "Code";
+}
+
+<h1>A code for this document</h1>
+
+@if (!Model.Sent)
+{
+    <p class="said">@Model.Said</p>
+    <p><a class="open" href="/">Back to your documents</a></p>
+}
+else
+{
+    <p class="lead">
+        A code has been sent for <span class="id">@Model.Accession</span>. It is
+        good for ten minutes, for this document, and for nobody else.
+    </p>
+
+    <p class="said">
+        This repository has no telephone, so the code is on the screen instead of
+        on a phone: <span class="code">@Model.OnTheScreen</span>
+    </p>
+
+    @if (Model.Said.Length > 0)
+    {
+        <p class="said">@Model.Said</p>
+    }
+
+    <form class="stack" method="post">
+        <input type="hidden" name="id" value="@Model.Accession" />
+        <label>
+            The six digits
+            <input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" />
+        </label>
+        <button type="submit">Open the document</button>
+    </form>
+}

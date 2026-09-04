@@ -1,0 +1,42 @@
+@*
+    The frame round every page.
+
+    The banner is not decoration. Everything in this portal is invented, and a
+    screenshot of it will end up somewhere without the README attached, so the
+    page says so itself.
+*@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] — Patient portal</title>
+    <link rel="stylesheet" href="~/portal.css" />
+</head>
+<body>
+    <p class="invented">Every patient and every document in this portal is invented.</p>
+
+    <header>
+        <a class="mark" href="/">Patient portal</a>
+        @if (Who.SignedIn(User) is { } patient)
+        {
+            <form method="post" action="/SignIn?handler=Out">
+                <span class="as">signed in as <strong>@patient</strong></span>
+                <button type="submit">Sign out</button>
+            </form>
+        }
+    </header>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer>
+        <p>
+            The interesting part of this is not on the screen. It is that the archive
+            has no method that takes a document identifier on its own, so no page here
+            can ask for a document without saying who is asking.
+        </p>
+    </footer>
+</body>
+</html>
