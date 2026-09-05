@@ -5,8 +5,8 @@ using System.Text;
 using Portal.Core;
 
 /// <summary>
-/// An invented ward: six patients, fourteen documents, and every combination
-/// that matters.
+/// An invented ward: six given names, a document for every combination that
+/// matters, and one patient with none of them.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -25,6 +25,10 @@ using Portal.Core;
 /// and an accession number that is not in the archive at all. Without the last
 /// one there is no way to show that a refusal says the same thing either way.
 /// </para>
+/// <para>
+/// And one patient with nothing, for the same reason. See
+/// <see cref="NothingYet"/>.
+/// </para>
 /// </remarks>
 public static class Ward
 {
@@ -33,6 +37,20 @@ public static class Ward
     [
         new("giulia"), new("marco"), new("elena"), new("davide"), new("sara"), new("paolo"),
     ];
+
+    /// <summary>
+    /// The patient who has no documents at all.
+    /// </summary>
+    /// <remarks>
+    /// A ward where everybody has something is a ward that never draws the empty
+    /// list — and the empty list is written: <c>Index.cshtml</c> has a branch for
+    /// it, and so does the measurement. A fixture that leaves a written branch
+    /// unreachable is a fixture that hides it, because the branch can be wrong
+    /// for as long as it likes and every check still passes. So one of the six
+    /// has nothing, and which one is named here rather than left to fall out of
+    /// the arithmetic in <see cref="Everything"/>.
+    /// </remarks>
+    public static PatientId NothingYet { get; } = Patients[^1];
 
     /// <summary>
     /// An accession number that is not in the archive.
@@ -55,7 +73,9 @@ public static class Ward
     }
 
     /// <summary>Every document in the ward.</summary>
-    /// <returns>Fourteen documents across six patients, and one of them has none.</returns>
+    /// <returns>
+    /// All of them, belonging to every patient but <see cref="NothingYet"/>.
+    /// </returns>
     public static IReadOnlyList<Document> Everything()
     {
         var documents = new List<Document>();
@@ -71,14 +91,16 @@ public static class Ward
             documents.Add(Make(ref number, who, "Serology results", released: true, sensitive: true));
         }
 
-        foreach (var who in Patients.Skip(2))
+        // Two each for the rest, and nothing for one of them. Excluded by name
+        // rather than by SkipLast(1), which selects the same patient today and
+        // says nothing: the emptiness is the point, so the page that draws it and
+        // the check that reads it need something to refer to.
+        foreach (var who in Patients.Skip(2).Where(one => one != NothingYet))
         {
             documents.Add(Make(ref number, who, "Discharge letter", released: true, sensitive: false));
             documents.Add(Make(ref number, who, "Ultrasound report", released: true, sensitive: false));
         }
 
-        // One patient with nothing at all. A portal that only ever runs against
-        // patients who have documents has never drawn its own empty page.
         return documents;
     }
 

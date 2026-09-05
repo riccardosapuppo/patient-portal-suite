@@ -139,6 +139,31 @@ public class Reaching : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
+    public async Task ThePatientWithNothingIsDrawnTheEmptyPage()
+    {
+        // This branch of Index.cshtml has been written since the first commit and
+        // no run of this repository had ever reached it: every patient on the
+        // ward had documents, so the list was never empty and the "nothing here
+        // yet" arm was dead. A written branch no fixture reaches can be wrong for
+        // years without anything failing, which is the thesis of this repository
+        // pointed at its own tests.
+        var browser = await SignedInAs(Ward.NothingYet);
+
+        var page = await browser.GetStringAsync("/");
+
+        Assert.Contains("There is nothing here yet", page, StringComparison.Ordinal);
+
+        // And empty rather than broken: no list drawn at all, and none of the
+        // ward's accession numbers on a page whose owner owns none of them.
+        Assert.DoesNotContain("class=\"documents\"", page, StringComparison.Ordinal);
+
+        foreach (var document in Ward.Everything())
+        {
+            Assert.DoesNotContain(document.Id.Value, page, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public async Task ASensitiveDocumentTakesACodeAndThenOpens()
     {
         var browser = await SignedInAs(Sensitive.Belongs);

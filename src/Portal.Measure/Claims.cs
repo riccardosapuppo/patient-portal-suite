@@ -7,16 +7,38 @@ using Portal.Store;
 /// <param name="Title">The claim, in one line.</param>
 /// <param name="Holds">Whether the ward still bears it out.</param>
 /// <param name="Lines">The working, printed under it.</param>
-public sealed record Claim(string Title, bool Holds, IReadOnlyList<string> Lines);
+/// <param name="Figures">The counts underneath, by name.</param>
+/// <remarks>
+/// <see cref="Figures"/> is the same arithmetic as <see cref="Lines"/> and not a
+/// second copy of it: the README quotes these numbers in prose as well as
+/// printing the block, and a number that is counted once and formatted twice
+/// cannot drift the way a number that is counted twice can. It is the argument
+/// the audit trail makes one floor down, applied to the documentation.
+/// </remarks>
+public sealed record Claim(
+    string Title,
+    bool Holds,
+    IReadOnlyList<string> Lines,
+    IReadOnlyDictionary<string, int> Figures);
 
 /// <summary>
 /// The claims, computed rather than written down.
 /// </summary>
 /// <remarks>
+/// <para>
 /// Every one of them is a count over the same matrix: every patient asking for
-/// every document, including one that does not exist. Six patients and fifteen
-/// accession numbers is ninety questions, which is small enough to run in a
-/// second and large enough that no route can be right by accident.
+/// every document, including one that does not exist. The ward is small enough
+/// that the whole matrix runs in a second, and wide enough that no route can be
+/// right by accident.
+/// </para>
+/// <para>
+/// How big it is does not get written down here. "Six patients and fifteen
+/// accession numbers is ninety questions" stood in this remark until the ward
+/// changed underneath it, and then it was three wrong numbers in a sentence
+/// nobody rereads. The table below counts them instead, and they reach the
+/// README through <see cref="Claim.Figures"/> rather than by being retyped —
+/// see <see cref="TheReadme"/>.
+/// </para>
 /// </remarks>
 public static class Claims
 {
@@ -106,7 +128,13 @@ public static class Claims
         return new Claim(
             "No route hands a patient a document that is not theirs",
             now == 0 && worst > 0,
-            lines);
+            lines,
+            new Dictionary<string, int>
+            {
+                ["leak.questions"] = asked,
+                ["leak.wrong"] = worst,
+                ["leak.wrong.now"] = now,
+            });
     }
 
     private static async Task<Claim> TheTrailIsTrue(Archive archive, CancellationToken cancel)
@@ -182,7 +210,13 @@ public static class Claims
         return new Claim(
             "The audit trail names the identity the archive was actually asked with",
             false_ > 0 && wrongNow == 0,
-            lines);
+            lines,
+            new Dictionary<string, int>
+            {
+                ["trail.lines"] = before.Lines.Count,
+                ["trail.wrong"] = false_,
+                ["trail.wrong.now"] = wrongNow,
+            });
     }
 
     private static async Task<Claim> ARefusalSaysNothing(Archive archive, CancellationToken cancel)
@@ -228,7 +262,13 @@ public static class Claims
         return new Claim(
             "A refusal does not tell a stranger whether the document exists",
             seen.Count == 1 && seen.Contains(Refusal.NotYours) && real > 0,
-            lines);
+            lines,
+            new Dictionary<string, int>
+            {
+                ["refusal.tried"] = notTheirs.Count,
+                ["refusal.real"] = real,
+                ["refusal.apart"] = seen.Count,
+            });
     }
 
     private static async Task<Claim> ACodeIsForOneDocument(Archive archive, CancellationToken cancel)
@@ -300,7 +340,12 @@ public static class Claims
         return new Claim(
             "A code opens the one document it was sent for, and only for the patient it was sent to",
             sent == sensitive.Count && rightOne && !wrongOne && oldWouldOpen,
-            lines);
+            lines,
+            new Dictionary<string, int>
+            {
+                ["code.asked"] = askedFor,
+                ["code.sent"] = sent,
+            });
     }
 
     private static Claim TheClockDoesNotDecide()
@@ -330,6 +375,12 @@ public static class Claims
         var oldDisagrees = 0;
         var newDisagrees = 0;
 
+        // Counted rather than written down as 27, which is what the two lines
+        // below and the README used to say in three places. The bound is the
+        // range of real UTC offsets, and it has moved before now: Samoa crossed
+        // the date line in 2011 and UTC+14 came into being.
+        var offsets = 0;
+
         for (var hours = -12; hours <= 14; hours++)
         {
             var wall = judged.ToOffset(TimeSpan.FromHours(hours)).DateTime;
@@ -337,6 +388,7 @@ public static class Claims
             var before = Expiry.StillGoodTheWayItWas(stamp, wall);
             var after = Expiry.StillGood(honest, judged);
 
+            offsets++;
             if (before) oldDisagrees++;
             if (after) newDisagrees++;
 
@@ -347,12 +399,12 @@ public static class Claims
         }
 
         lines.Add(new string('-', 44));
-        lines.Add($"{"still good, of 27",18}{oldDisagrees,14}{newDisagrees,12}");
+        lines.Add($"{$"still good, of {offsets}",18}{oldDisagrees,14}{newDisagrees,12}");
         lines.Add(string.Empty);
         lines.Add("  A wall clock reading does not say which wall it was on. The stamp was written");
         lines.Add("  by one process and read by another, and when those two disagreed about the");
         lines.Add($"  offset the session outlived its own expiry by exactly the difference — {oldDisagrees} of the");
-        lines.Add("  27 offsets a reader could be on, up to twelve hours past.");
+        lines.Add($"  {offsets} offsets a reader could be on, up to twelve hours past.");
         lines.Add(string.Empty);
         lines.Add("  Nothing failed while that was true. Nothing was logged. The number in the row");
         lines.Add("  was the number that had been written.");
@@ -360,7 +412,13 @@ public static class Claims
         return new Claim(
             "A session expires at the same moment whichever clock reads it",
             oldDisagrees > 0 && newDisagrees == 0,
-            lines);
+            lines,
+            new Dictionary<string, int>
+            {
+                ["clock.offsets"] = offsets,
+                ["clock.stillgood"] = oldDisagrees,
+                ["clock.stillgood.now"] = newDisagrees,
+            });
     }
 
     private static DateTimeOffset When => new(2026, 7, 14, 9, 0, 0, TimeSpan.Zero);

@@ -3,6 +3,9 @@
 // It exits non-zero when a claim stops holding, so it is a check and not a
 // demonstration: the README quotes these numbers, CI runs this, and a figure
 // that stops being true stops the build.
+//
+// And non-zero, too, when the README's prose stops quoting them correctly,
+// which is the failure that actually happened here. See TheReadme.
 using Portal.Measure;
 using Portal.Store;
 
@@ -41,12 +44,18 @@ Console.WriteLine();
 
 var broken = claims.Where(claim => !claim.Holds).ToList();
 
-if (broken.Count == 0)
-{
-    Console.WriteLine($"All {claims.Count} claims hold.");
-    return 0;
-}
-
 foreach (var claim in broken) Console.WriteLine($"BROKEN: {claim.Title}");
 
-return 1;
+if (broken.Count == 0) Console.WriteLine($"All {claims.Count} claims hold.");
+
+// And the other half of the same question. Everything above this line is
+// regenerated and diffed by CI, so the block cannot go stale; the prose that
+// quotes it can, and the prose is the part a reader meets first. See TheReadme.
+var quoted = TheReadme.WhatItQuotes(claims);
+var stale = TheReadme.NotSaid(quoted);
+
+foreach (var sentence in stale) Console.WriteLine($"STALE:  the README does not say \"{sentence}\"");
+
+if (stale.Count == 0) Console.WriteLine($"And the {quoted.Count} figures its prose quotes are these ones.");
+
+return broken.Count == 0 && stale.Count == 0 ? 0 : 1;

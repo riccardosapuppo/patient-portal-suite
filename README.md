@@ -27,14 +27,16 @@ It comes with five claims, and each of them can fail:
 
 | | |
 | --- | --- |
-| **No route hands a patient a document that is not theirs.** | Over 90 questions: the two leaking routes hand over **70** documents belonging to somebody else. This portal hands over **0**. |
-| **The audit trail names the identity the archive was actually asked with.** | **70** of the old route's 90 lines claim a handover to somebody who does not own the document. The portal's: **0**. |
-| **A refusal does not tell a stranger whether the document exists.** | 12 accession numbers tried by somebody who owns none of them, **11** of them real, and **1** answer they can tell apart. |
+| **No route hands a patient a document that is not theirs.** | Over 78 questions: the two leaking routes hand over **60** documents belonging to somebody else. This portal hands over **0**. |
+| **The audit trail names the identity the archive was actually asked with.** | **60** of the old route's 78 lines claim a handover to somebody who does not own the document. The portal's: **0**. |
+| **A refusal does not tell a stranger whether the document exists.** | 10 accession numbers tried by somebody who owns none of them, **9** of them real, and **1** answer they can tell apart. |
 | **A code opens the one document it was sent for.** | Sent only for documents the archive would otherwise hand over; checked against the same patient and document; used once. |
 | **A session expires at the same moment whichever clock reads it.** | The old seventeen-digit stamp is still valid on **12** of the 27 offsets a reader could be sitting on. |
 
 `dotnet run --project src/Portal.Measure` prints those and exits non-zero if any
-of them stops being true. So does CI.
+of them stops being true — and also if this file stops quoting them correctly,
+because the numbers in the table above are read back out of it and compared. So
+does CI.
 
 ![A patient's own list: one released, one still a draft, one that needs a code](docs/documents.png)
 
@@ -94,7 +96,7 @@ dotnet --version        # 9.0.317 here; any 9.0.x will do
 ```
 
 ```
-dotnet test src/Portal.Tests            # 33 checks
+dotnet test src/Portal.Tests            # 35 checks
 dotnet run  --project src/Portal.Measure    # the five claims
 dotnet run  --project src/Portal.Web        # the portal, on http://localhost:5000
 ```
@@ -111,22 +113,23 @@ so.
 | --- | --- |
 | `Portal.Core` | The deciding. Identities, an answer, an audit line, the second factor, and the four routes as they were — kept runnable so the difference can be counted. |
 | `Portal.Store` | The archive, in SQLite, where the binding is visible in a `WHERE` clause. And the invented ward. |
-| `Portal.Measure` | Runs the ward through both and prints the difference. Exits non-zero when a claim stops holding. |
+| `Portal.Measure` | Runs the ward through both and prints the difference. Exits non-zero when a claim stops holding, or when the prose in this file stops agreeing with it. |
 | `Portal.Web` | ASP.NET Core, Razor Pages, a cookie. |
-| `Portal.Tests` | 33 checks: the archive asked directly, the portal driven over HTTP, and three that are about the shape of the code rather than what it does. |
+| `Portal.Tests` | 35 checks: the archive asked directly, the portal driven over HTTP, three that are about the shape of the code rather than what it does, and one that holds this file to the number in this cell. |
 | `tools/screenshots.sh` | The two pictures above, taken from the running portal rather than by hand. |
 
 ### The ward is invented, and that is not a detail
 
 A patient portal is the one place where a realistic fixture is a disclosure: a
 name, a date of birth and a report title together are a person, and a repository
-is forever. Nothing here comes from anywhere. Six given names, fourteen
-documents of placeholder text, sequential accession numbers, and one accession
-number that is not in the archive at all — which the third claim depends on
-entirely.
+is forever. Nothing here comes from anywhere. Six given names, twelve documents
+of placeholder text, sequential accession numbers, and one accession number that
+is not in the archive at all — which the third claim depends on entirely.
 
 One of the six patients has no documents, because a portal that only ever runs
-against patients who have some has never drawn its own empty page.
+against patients who have some has never drawn its own empty page. That branch
+of the list is written, and until the ward had somebody empty in it no run of
+this repository had ever reached it.
 
 ---
 
@@ -216,16 +219,23 @@ for the same reason.
 Printed by `dotnet run --project src/Portal.Measure`, and checked against this
 file by CI, so it cannot quietly stop being what the program says.
 
+The block is the easy half: it is regenerated and diffed, so nobody has to keep
+it in step. The hard half is the prose, which is where a reader looks first and
+where a copied number rots unwatched — this file said for a while that one of
+the six patients had no documents while all six had some. So the sentences above
+that quote a figure are held against the run as well, by name, and the program
+exits non-zero when one of them is no longer in here.
+
 ```
 
-An invented ward: 6 patients, 14 documents, and one accession number (ACC-000000) that is not in the archive.
+An invented ward: 6 patients, 12 documents, and one accession number (ACC-000000) that is not in the archive.
 
   giulia     3 documents: 1 released, 1 draft, 1 sensitive
   marco      3 documents: 1 released, 1 draft, 1 sensitive
   elena      2 documents: 2 released, 0 draft, 0 sensitive
   davide     2 documents: 2 released, 0 draft, 0 sensitive
   sara       2 documents: 2 released, 0 draft, 0 sensitive
-  paolo      2 documents: 2 released, 0 draft, 0 sensitive
+  paolo      0 documents — the empty page, which a portal that only runs against busy patients never draws
 
 ==============================================================================
 HOLDS   No route hands a patient a document that is not theirs
@@ -233,18 +243,18 @@ HOLDS   No route hands a patient a document that is not theirs
 
   route             questions  handed over  not theirs
   ----------------------------------------------------
-  PostDocument             90           84          70
-  RequestRemove            90           84          70
-  RequestImage             90           14           0
-  PostImage                90           14           0
-  the portal               90           10           0
+  PostDocument             78           72          60
+  RequestRemove            78           72          60
+  RequestImage             78           12           0
+  PostImage                78           12           0
+  the portal               78            8           0
 
     Two of the four routes bind the patient to the document and two do not, and
     reading the four methods will not tell you which. All four load the patient
     from the session; all four name the patient in the log line. The difference is
     one term in one predicate, and its absence looks exactly like nothing.
 
-    The portal hands over 10 of 90: the released documents that are the
+    The portal hands over 8 of 78: the released documents that are the
     asker's own. Drafts and sensitive ones are refused here and dealt with lower
     down. It cannot leak, because the question it is asked cannot be written
     without the patient in it.
@@ -253,10 +263,10 @@ HOLDS   No route hands a patient a document that is not theirs
 HOLDS   The audit trail names the identity the archive was actually asked with
 ==============================================================================
 
-    lines written by the old route    90
-    of which claim a handover to somebody who does not own it    70
+    lines written by the old route    78
+    of which claim a handover to somebody who does not own it    60
 
-    lines written by the portal       90
+    lines written by the portal       78
     of which claim the same            0
 
     The original wrote its log line from the session and its request from the
@@ -282,15 +292,15 @@ HOLDS   The audit trail names the identity the archive was actually asked with
 HOLDS   A refusal does not tell a stranger whether the document exists
 ==============================================================================
 
-    accessions tried by somebody who owns none of them    12
-    of which are real                                     11
+    accessions tried by somebody who owns none of them    10
+    of which are real                                      9
     distinct answers they could tell apart                 1   (NotYours)
 
     This is the check that a fix for the first claim tends to fail. The natural
     repair for a leak is to look the document up, find it belongs to somebody
     else, and answer 403 — while answering 404 when there is nothing there.
 
-    Somebody walking the accession space would then separate the 11 real numbers
+    Somebody walking the accession space would then separate the 9 real numbers
     from the 1 that is not, without being handed a single byte. On a real
     archive the numbers are sequential and that is the whole patient list.
 
@@ -301,7 +311,7 @@ HOLDS   A refusal does not tell a stranger whether the document exists
 HOLDS   A code opens the one document it was sent for, and only for the patient it was sent to
 ==============================================================================
 
-    requests for a code                 90
+    requests for a code                 78
     codes actually sent                  2   (the sensitive documents, asked for by their owner)
     sent for somebody else's document    0
 
@@ -352,6 +362,7 @@ HOLDS   A session expires at the same moment whichever clock reads it
     was the number that had been written.
 
 All 5 claims hold.
+And the 11 figures its prose quotes are these ones.
 ```
 
 ---
