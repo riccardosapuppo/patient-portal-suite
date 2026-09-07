@@ -5,12 +5,12 @@ matters more than everything else in the system put together: **nobody is ever
 handed somebody else's.**
 
 This is a rebuild of a portal that got that wrong, and the interesting part is
-*how* it got it wrong. Not by forgetting about the patient — the patient is
-loaded on every route, and named in every log line. Four routes read the
-signed-in patient out of the session, wrote them into the audit trail, and then
-two of them sent the accession number from the request body straight to the
-archive with nothing binding the two together. Reading the four methods side by
-side will not tell you which two.
+*how* it got it wrong. Not by forgetting about the patient, who is loaded on
+every route and named in every log line. Four routes read the signed-in patient
+out of the session, wrote them into the audit trail, and then two of them sent
+the accession number from the request body straight to the archive with nothing
+binding the two together. Reading the four methods side by side will not tell
+you which two.
 
 ```csharp
 // This one is fine.
@@ -34,9 +34,8 @@ It comes with five claims, and each of them can fail:
 | **A session expires at the same moment whichever clock reads it.** | The old seventeen-digit stamp is still valid on **12** of the 27 offsets a reader could be sitting on. |
 
 `dotnet run --project src/Portal.Measure` prints those and exits non-zero if any
-of them stops being true — and also if this file stops quoting them correctly,
-because the numbers in the table above are read back out of it and compared. So
-does CI.
+of them stops being true, or if this file stops quoting them correctly, because
+the numbers in the table above are read back out of it and compared. So does CI.
 
 ![A patient's own list: one released, one still a draft, one that needs a code](docs/documents.png)
 
@@ -66,10 +65,10 @@ number on its own. A route cannot forget to bind the patient to the document,
 because it has nothing to hand the archive except the two of them together.
 
 That distinction matters more than it looks. **A check is a line that can be
-absent, and this repository is a demonstration that an absent line is invisible**
-— it was absent in two of four nearly identical methods and nobody saw it for
-years. A type is not absent. The wrong version does not fail review; it fails to
-compile.
+absent, and this repository is a demonstration that an absent line is
+invisible**: it was absent in two of four nearly identical methods and nobody
+saw it for years. A type is not absent. The wrong version does not fail review;
+it fails to compile.
 
 A test says so out loud, by reflection, so that adding the dangerous method
 fails before any route has had the chance to call it:
@@ -111,7 +110,7 @@ so.
 
 | | |
 | --- | --- |
-| `Portal.Core` | The deciding. Identities, an answer, an audit line, the second factor, and the four routes as they were — kept runnable so the difference can be counted. |
+| `Portal.Core` | The deciding. Identities, an answer, an audit line, the second factor, and the four routes as they were, kept runnable so the difference can be counted. |
 | `Portal.Store` | The archive, in SQLite, where the binding is visible in a `WHERE` clause. And the invented ward. |
 | `Portal.Measure` | Runs the ward through both and prints the difference. Exits non-zero when a claim stops holding, or when the prose in this file stops agreeing with it. |
 | `Portal.Web` | ASP.NET Core, Razor Pages, a cookie. |
@@ -148,7 +147,7 @@ and is reassured.
 ### The login route had no `[Authorize]`
 
 It read the signed-in patient out of the session anyway, and threw a
-`NullReferenceException` when there was not one — which was caught, and returned
+`NullReferenceException` when there was not one, which was caught and returned
 as a generic error. The route was protected by an accident, and would have
 stopped being protected the day somebody tidied up the exception.
 
@@ -168,7 +167,7 @@ against those two names, so a page added tomorrow is covered tomorrow.
 ### The second factor was attached to nothing
 
 The route read the accession from the request body and asked for a code against
-it, so a patient could be sent a code — to their own phone — for somebody else's
+it, so a patient could be sent a code to their own phone for somebody else's
 study. And confirming meant finding a live challenge with those six digits,
 rather than those six digits for this patient and this document.
 
@@ -193,7 +192,7 @@ in the row was the number that had been written.
 ## The refusal that says nothing
 
 The natural repair for a leak is to look the document up, find it belongs to
-somebody else, and answer 403 — while answering 404 when there is nothing there.
+somebody else, and answer 403, reserving 404 for when there is nothing there.
 That is still wrong, and it is wrong in a way no amount of testing the happy path
 finds.
 
@@ -221,7 +220,7 @@ file by CI, so it cannot quietly stop being what the program says.
 
 The block is the easy half: it is regenerated and diffed, so nobody has to keep
 it in step. The hard half is the prose, which is where a reader looks first and
-where a copied number rots unwatched — this file said for a while that one of
+where a copied number rots unwatched: this file said for a while that one of
 the six patients had no documents while all six had some. So the sentences above
 that quote a figure are held against the run as well, by name, and the program
 exits non-zero when one of them is no longer in here.
