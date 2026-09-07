@@ -375,4 +375,17 @@ real accession numbers and no real reports. What is kept is the shape of the
 problem and the four mistakes, which were real, and one of which handed
 documents to whoever asked for them by number.
 
+## Production reconstruction
+
+This repository is an independent reconstruction of a production system I
+designed and developed.
+
+Confidentiality and intellectual property constraints mean the original cannot
+be published. It was rebuilt from scratch so it could be shown and run,
+preserving the core architecture, workflows and technical challenges of the
+production solution, with newly written code and fictional data.
+
+No proprietary source code, confidential data or client assets from the
+original system are included in this repository.
+
 MIT licensed. See [LICENSE](LICENSE).
