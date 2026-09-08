@@ -92,3 +92,16 @@ input, select { font: inherit; padding: .45rem .55rem; border: 1px solid var(--l
 .code { font-family: ui-monospace, Consolas, monospace; font-size: 1.2rem; letter-spacing: .18em; }
 
 footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); color: var(--quiet); font-size: .82rem; }
+
+/*
+    The footer carries the only link on the page that leaves it, and a link with
+    no rule of its own comes out in the browser's blue on grey text. It gets the
+    portal's own blue, underlined because colour alone is not a signal, and a
+    ring on keyboard focus for the same reason.
+*/
+footer p { margin: 0 0 .5rem; }
+footer .by { margin-bottom: 0; }
+
+footer a { color: var(--mark); text-decoration: underline; text-underline-offset: .15em; }
+footer a:hover { color: var(--ink); }
+footer a:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; border-radius: .15rem; }
