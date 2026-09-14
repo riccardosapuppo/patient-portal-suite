@@ -1,6 +1,7 @@
 namespace Portal.Tests;
 
 using System.Net;
+using System.Text.RegularExpressions;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -111,12 +112,44 @@ public class Reaching : IClassFixture<WebApplicationFactory<Program>>
 
         Assert.Equal(real.StatusCode, invented.StatusCode);
 
-        // Byte for byte. A page that differs by a word, a length header, or a
-        // whitespace is a page somebody can tell apart, and telling them apart
-        // is the whole of the enumeration attack.
-        Assert.Equal(
-            await real.Content.ReadAsStringAsync(),
-            await invented.Content.ReadAsStringAsync());
+        // Byte for byte, with the antiforgery tokens masked and nothing else.
+        //
+        // A page that differs by a word, a length header or a whitespace is a
+        // page somebody can tell apart, and telling them apart is the whole of
+        // the enumeration attack. But every signed-in page now carries a fresh
+        // token in the sign-out form, so no two responses are ever literally
+        // equal: a token is redrawn on every response whatever was asked for,
+        // which makes it noise rather than an answer.
+        //
+        // The danger in masking is obvious -- a mask that grows until it covers
+        // whatever happens to differ is a check that cannot fail. So it covers
+        // one named field, and how many of them each page had is compared too:
+        // a refusal with a sign-out form beside one without is a difference
+        // somebody can see, and this would still catch it.
+        var (fromReal, inReal) = WithoutTokens(await real.Content.ReadAsStringAsync());
+        var (fromInvented, inInvented) = WithoutTokens(await invented.Content.ReadAsStringAsync());
+
+        Assert.Equal(inReal, inInvented);
+        Assert.Equal(fromReal, fromInvented);
+    }
+
+    /// <summary>The page with every antiforgery field blanked, and how many there were.</summary>
+    /// <param name="page">The page as it was sent.</param>
+    /// <returns>The page, and the number of fields masked in it.</returns>
+    private static (string Page, int Masked) WithoutTokens(string page)
+    {
+        var masked = 0;
+
+        var without = Regex.Replace(
+            page,
+            "<input[^>]*__RequestVerificationToken[^>]*>",
+            _ =>
+            {
+                masked++;
+                return "<input name=\"__RequestVerificationToken\" value=\"(masked)\" />";
+            });
+
+        return (without, masked);
     }
 
     [Fact]
@@ -259,6 +292,33 @@ public class Reaching : IClassFixture<WebApplicationFactory<Program>>
         ]));
 
         Assert.Equal(HttpStatusCode.BadRequest, answer.StatusCode);
+    }
+
+    [Fact]
+    public async Task SigningOutIsAButtonSomebodyCanActuallyPress()
+    {
+        // The button in the corner of every signed-in page, and the only one in
+        // the portal that no check had ever pressed. It answered 400 to every
+        // press for as long as it had existed: the form wrote its own action
+        // attribute, so the tag helper stepped back and put no antiforgery
+        // token in it, and the token is not optional.
+        //
+        // Nothing here knows why it failed. It signs in, presses the button the
+        // way a browser does, and says what came back -- which is why it would
+        // have caught a fault nobody had thought of.
+        using var browser = await SignedInAs(Hers.Belongs);
+
+        var page = await browser.GetStringAsync("/");
+        var answer = await Send(browser, page, "/SignIn?handler=Out", []);
+
+        Assert.Equal(HttpStatusCode.Redirect, answer.StatusCode);
+        Assert.Equal("/SignIn", answer.Headers.Location?.OriginalString);
+
+        // And it has to have actually signed out, not merely answered politely.
+        using var after = await browser.GetAsync("/");
+
+        Assert.Equal(HttpStatusCode.Redirect, after.StatusCode);
+        Assert.Contains("/SignIn", after.Headers.Location?.OriginalString ?? string.Empty, StringComparison.Ordinal);
     }
 
     private async Task<HttpClient> SignedInAs(PatientId who)

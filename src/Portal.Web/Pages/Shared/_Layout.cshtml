@@ -21,7 +21,18 @@
             <a class="mark" href="/">Patient portal</a>
             @if (Who.SignedIn(User) is { } patient)
             {
-                <form method="post" action="/SignIn?handler=Out">
+                @*
+                    asp-page rather than a written-out action, and that is the
+                    whole of a bug somebody hit on their first afternoon here.
+
+                    The tag helper puts the antiforgery token into a form it
+                    addresses itself. Give the form an action attribute of your
+                    own and it steps back and adds nothing -- so this posted
+                    without a token and every sign out answered 400. The page
+                    looked right, the handler was right, and the button was the
+                    only one in the portal no check had ever pressed.
+                *@
+                <form method="post" asp-page="/SignIn" asp-page-handler="Out">
                     <span class="as">signed in as <strong>@patient</strong></span>
                     <button type="submit">Sign out</button>
                 </form>
