@@ -33,21 +33,32 @@ It comes with five claims, and each of them can fail:
 | **A code opens the one document it was sent for.** | Sent only for documents the archive would otherwise hand over; checked against the same patient and document; used once. |
 | **A session expires at the same moment whichever clock reads it.** | The old seventeen-digit stamp is still valid on **12** of the 27 offsets a reader could be sitting on. |
 
-`dotnet run --project src/Portal.Measure` prints those and exits non-zero if any
-of them stops being true, or if this file stops quoting them correctly, because
-the numbers in the table above are read back out of it and compared. So does CI.
-
 ![A patient's own list: one released, one still a draft, one that needs a code](docs/documents.png)
 
 ```
 dotnet run --project src/Portal.Web
 ```
 
-The portal opens in your browser on <http://localhost:5000>. Sign in as any of
-the invented patients; the password is `ward` and the page says so. What it is
-arguing, and the measurement behind it, is below — it reads better once you have
-signed in as one patient and tried to reach another one's report. Everything
-else you can run is under [Before you start](#before-you-start).
+The portal opens in your browser on <http://localhost:5000>, at a sign-in that
+is **one click**: six invented patients, each saying what signing in as them
+will show. Two have a report that asks for a code, one has nothing at all.
+
+![Signing in: six invented patients, each saying what it will show, one click each](docs/signing-in.png)
+
+There is nothing to remember and nothing to type. The password is `ward`, it is
+in this file and in the source, and it is in the form — a password nobody can
+use on anything is not a credential, and making somebody type it teaches them
+nothing about the part of this that is real. The typed form is still there,
+folded up, because the checks drive it.
+
+Then try to reach another patient's report. The argument below reads better once
+you have.
+
+Everything else you can run is under [Before you start](#before-you-start),
+including `dotnet run --project src/Portal.Measure`, which prints the table
+above and exits non-zero if any of it stops being true, or if this file stops
+quoting it correctly: the numbers are read back out of this page and compared.
+So does CI.
 
 ---
 

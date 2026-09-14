@@ -17,14 +17,16 @@
     <p class="invented">Every patient and every document in this portal is invented.</p>
 
     <header>
-        <a class="mark" href="/">Patient portal</a>
-        @if (Who.SignedIn(User) is { } patient)
-        {
-            <form method="post" action="/SignIn?handler=Out">
-                <span class="as">signed in as <strong>@patient</strong></span>
-                <button type="submit">Sign out</button>
-            </form>
-        }
+        <div class="bar">
+            <a class="mark" href="/">Patient portal</a>
+            @if (Who.SignedIn(User) is { } patient)
+            {
+                <form method="post" action="/SignIn?handler=Out">
+                    <span class="as">signed in as <strong>@patient</strong></span>
+                    <button type="submit">Sign out</button>
+                </form>
+            }
+        </div>
     </header>
 
     <main>

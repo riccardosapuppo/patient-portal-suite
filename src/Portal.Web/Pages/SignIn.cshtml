@@ -7,9 +7,10 @@
 <h1>Sign in</h1>
 
 <p class="lead">
-    This ward is invented, so the sign-in is too: pick a patient and use the
-    password below. What is <em>not</em> invented is what happens afterwards:
-    every page can only ask the archive about the patient you picked.
+    This ward is invented, so the sign-in is too. What is <em>not</em> invented is
+    what happens afterwards: every page can only ask the archive about the
+    patient you pick, because the archive has no method that will answer without
+    being told who is asking.
 </p>
 
 @if (Model.Said is not null)
@@ -17,23 +18,58 @@
     <p class="said">@Model.Said</p>
 }
 
-<form class="stack" method="post">
-    <label>
-        Patient
-        <select name="Patient" asp-for="Patient">
-            @foreach (var one in Model.Everyone)
+@*
+    One click each, and each says what it will show.
+
+    The password goes into the form rather than into a sentence under it. It is
+    `ward`, it is in the README, it is in the source, and the page says the whole
+    ward is invented — a password nobody can use on anything is not a credential,
+    and making somebody type it teaches them nothing about the part of this that
+    is real. The first person to open this submitted the form empty and asked
+    what the credentials were, with the answer three inches below the button.
+*@
+<section class="pick">
+    <h2>Sign in as one of them</h2>
+    <p>Each shows something different. The interesting one is whoever has a document that needs a code.</p>
+
+    <form method="post">
+        <input type="hidden" name="password" value="@SignInModel.ThePassword" />
+
+        <ul class="whom">
+            @foreach (var one in Model.Choices)
             {
-                <option value="@one">@one</option>
+                <li>
+                    <button type="submit" name="Patient" value="@one.Who">
+                        <span class="who">@one.Who</span>
+                        <span class="has">@one.What</span>
+                    </button>
+                </li>
             }
-        </select>
-    </label>
+        </ul>
+    </form>
+</section>
 
-    <label>
-        Password
-        <input type="password" name="Password" autocomplete="current-password" />
-    </label>
+<details class="byhand">
+    <summary>Or type it</summary>
 
-    <button type="submit">Sign in</button>
-</form>
+    <form class="stack" method="post">
+        <label>
+            Patient
+            <select name="Patient" asp-for="Patient">
+                @foreach (var one in Model.Everyone)
+                {
+                    <option value="@one">@one</option>
+                }
+            </select>
+        </label>
 
-<p class="state">The password for every invented patient is <code>ward</code>.</p>
+        <label>
+            Password
+            <input type="password" name="password" autocomplete="current-password" />
+        </label>
+
+        <button type="submit">Sign in</button>
+    </form>
+
+    <p class="lead">The password for every invented patient is <code>@SignInModel.ThePassword</code>.</p>
+</details>

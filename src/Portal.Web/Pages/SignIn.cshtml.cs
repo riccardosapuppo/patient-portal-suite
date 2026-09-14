@@ -39,6 +39,51 @@ public sealed class SignInModel : PageModel
     /// <summary>Everyone on the invented ward.</summary>
     public IReadOnlyList<PatientId> Everyone => Ward.Patients;
 
+    /// <summary>Each invented patient, and what signing in as them shows.</summary>
+    /// <remarks>
+    /// <para>
+    /// The page used to be a select, a password box, and the password printed
+    /// in a line underneath. Somebody opening this for the first time submitted
+    /// it empty, got told it was not a patient and a password we recognise, and
+    /// asked what the credentials were -- with the answer three inches below
+    /// the button they had just pressed. A thing needed in order to get in
+    /// cannot live under the form.
+    /// </para>
+    /// <para>
+    /// So each patient is a button that signs you in, and each says what that
+    /// patient is here to show: one has a document that will ask for a code,
+    /// one has nothing at all. Choosing becomes choosing what to look at rather
+    /// than picking a name off a list.
+    /// </para>
+    /// <para>
+    /// Counted from the invented ward rather than asked of the archive. This
+    /// page runs before anybody is signed in, and a sign-in page that queries
+    /// the record of every patient in order to describe them is the shape of
+    /// thing this repository exists to argue against -- even where the data is
+    /// invented and the page says so.
+    /// </para>
+    /// </remarks>
+    public IReadOnlyList<(string Who, string What)> Choices { get; } =
+        Ward.Patients
+            .Select(who =>
+            {
+                var theirs = Ward.Everything().Where(one => one.Belongs == who).ToList();
+
+                var parts = new List<string>();
+                var readable = theirs.Count(one => one.Released && !one.Sensitive);
+                var guarded = theirs.Count(one => one.Released && one.Sensitive);
+                var waiting = theirs.Count(one => !one.Released);
+
+                if (readable > 0) parts.Add($"{readable} to read");
+                if (guarded > 0) parts.Add($"{guarded} needing a code");
+                if (waiting > 0) parts.Add($"{waiting} not signed off");
+
+                return (
+                    who.Value,
+                    parts.Count == 0 ? "nothing yet — the empty page" : string.Join(", ", parts));
+            })
+            .ToList();
+
     /// <summary>Show the form.</summary>
     public void OnGet()
     {

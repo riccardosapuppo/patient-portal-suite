@@ -23,7 +23,15 @@ else
     <ul class="documents">
         @foreach (var one in Model.Documents)
         {
-            <li>
+            @*
+                The state is on the row itself, as the edge down its left side.
+                Going down a list the question is which of these can I read, and
+                a colour answers it before the words do -- but never on its own:
+                every row also says the state in words, because a colour is not
+                a sentence and not everybody sees the difference between two of
+                them.
+            *@
+            <li class="@(one.Released ? (one.Sensitive ? "guarded" : "") : "waiting")">
                 <span>
                     <span class="what">@one.Title</span><br />
                     <span class="id">@one.Id</span>
@@ -35,7 +43,7 @@ else
                 }
                 else if (one.Sensitive)
                 {
-                    <a class="open" href="/Code?id=@one.Id">Send me a code</a>
+                    <a class="open guarded" href="/Code?id=@one.Id">Send me a code</a>
                 }
                 else
                 {

@@ -1,107 +1,421 @@
 /*
     Plain, and deliberately so. A patient portal is read by people who are
-    worried, on an old phone, in a corridor.
+    worried, on an old phone, in a corridor. Nothing here animates, nothing
+    loads a font, and the whole page is one column.
+
+    ── Where the look comes from ────────────────────────────────────────────────
+
+    Not "medical, therefore blue and rounded". What is characteristic here is a
+    report: a document with a state -- drafted, signed off, restricted --
+    belonging to exactly one person, and carrying an accession number that is a
+    real identifier rather than a label. So:
+
+      - the state is a coloured edge down the side of the row, not a badge in a
+        corner. Going down the list, the question somebody actually has is which
+        of these can I read, and the edge answers it before the words do;
+      - the reading text is a serif, because these are records rather than an
+        application's chrome -- and because every other project in this
+        portfolio is set in a sans, and six projects sharing one typeface is a
+        portfolio of one template;
+      - the accession number is monospaced, which here is meaning and not
+        decoration: it is a code, it gets read out loud, and the digits have to
+        be told apart.
+
+    ── Colour ───────────────────────────────────────────────────────────────────
+
+    A cool paper with a green cast rather than cream, an ink that is green-black
+    rather than grey-black, and one institutional green doing the work. Amber is
+    kept for the single state that asks something of you -- a document that
+    needs a code -- and slate for the one that asks nothing yet, because a draft
+    is not a warning, it is a wait.
 */
 
 :root {
-    --ink: #171c24;
-    --quiet: #5c6675;
-    --line: #d8dde4;
-    --paper: #fbfcfd;
-    --mark: #17506b;
-    --warn: #8a5a12;
-    --warn-ground: #fdf6e6;
+    --paper: #f3f6f4;
+    --card: #ffffff;
+    --raised: #f8faf9;
+
+    --ink: #12211c;
+    --ink-soft: #4a5a53;
+    --ink-faint: #7d8c85;
+    --line: #d9e1dc;
+
+    /* The institutional colour: signage green, not the default product blue. */
+    --seal: #14563f;
+    --seal-deep: #0e3d2d;
+    --seal-soft: #e4efe9;
+
+    /* Asks something of you. */
+    --wait: #8a5312;
+    --wait-soft: #fbf1e0;
+    --wait-line: #efd9b3;
+
+    /* Asks nothing of you yet. */
+    --draft: #4d5b6a;
+    --draft-soft: #edf0f3;
+    --draft-line: #d3dae1;
+
+    --read: 'Sitka Text', Charter, Constantia, 'Iowan Old Style', Georgia, serif;
+    --ui: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --mono: ui-monospace, 'Cascadia Mono', 'SF Mono', Consolas, 'Liberation Mono', monospace;
 }
 
-* { box-sizing: border-box; }
+* {
+    box-sizing: border-box;
+}
 
 body {
     margin: 0;
-    padding: 0 1rem 3rem;
     background: var(--paper);
     color: var(--ink);
-    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font: 1rem/1.6 var(--read);
+    -webkit-text-size-adjust: 100%;
 }
 
+/*
+    Everything here is invented, and a screenshot of this page will end up
+    somewhere without the README attached. So the page says so itself, at the
+    top, where a crop is least likely to lose it.
+*/
 .invented {
-    margin: 0 -1rem 1.5rem;
-    padding: .55rem 1rem;
-    background: var(--warn-ground);
-    border-bottom: 1px solid #efe0bd;
-    color: var(--warn);
-    font-size: .82rem;
+    margin: 0;
+    padding: 0.5rem 1.25rem;
+    background: var(--seal-deep);
+    color: #cfe3d8;
+    font: 0.8rem/1.5 var(--ui);
 }
-
-header, main, footer { max-width: 44rem; margin: 0 auto; }
 
 header {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .75rem;
-    align-items: baseline;
-    justify-content: space-between;
-    padding-bottom: 1rem;
+    background: var(--card);
     border-bottom: 1px solid var(--line);
+    padding: 0.85rem 1.25rem;
 }
 
-header form { display: flex; gap: .6rem; align-items: baseline; }
-
-.mark { color: var(--mark); font-weight: 650; text-decoration: none; letter-spacing: -.01em; }
-.as { color: var(--quiet); font-size: .85rem; }
-
-h1 { font-size: 1.4rem; margin: 1.6rem 0 .4rem; letter-spacing: -.01em; }
-h2 { font-size: 1rem; margin: 2rem 0 .5rem; }
-p.lead { color: var(--quiet); margin-top: 0; }
-
-ul.documents { list-style: none; margin: 1.2rem 0; padding: 0; }
-
-ul.documents li {
+.bar {
     display: flex;
-    flex-wrap: wrap;
-    gap: .4rem 1rem;
     align-items: baseline;
     justify-content: space-between;
-    padding: .85rem 0;
-    border-bottom: 1px solid var(--line);
+    gap: 1rem;
+    max-width: 46rem;
+    margin-inline: auto;
 }
 
-ul.documents .what { font-weight: 600; }
-ul.documents .id { color: var(--quiet); font-size: .8rem; font-family: ui-monospace, Consolas, monospace; }
-
-.state { font-size: .8rem; color: var(--quiet); }
-
-a.open, button {
-    font: inherit;
-    font-size: .88rem;
-    padding: .35rem .8rem;
-    border: 1px solid var(--line);
-    border-radius: .3rem;
-    background: #fff;
-    color: var(--mark);
+.mark {
+    font: 600 1.05rem/1 var(--ui);
+    letter-spacing: -0.01em;
+    color: var(--seal);
     text-decoration: none;
+}
+
+.mark:hover {
+    color: var(--seal-deep);
+}
+
+.bar form {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    margin: 0;
+}
+
+.as {
+    font: 0.85rem var(--ui);
+    color: var(--ink-soft);
+}
+
+.as strong {
+    color: var(--ink);
+}
+
+main {
+    max-width: 46rem;
+    margin-inline: auto;
+    padding: 2rem 1.25rem 3rem;
+}
+
+h1 {
+    margin: 0 0 0.5rem;
+    font: 600 1.9rem/1.15 var(--read);
+    letter-spacing: -0.015em;
+}
+
+.lead {
+    margin: 0 0 1.6rem;
+    max-width: 40rem;
+    color: var(--ink-soft);
+}
+
+.said {
+    margin: 0 0 1.4rem;
+    padding: 0.8rem 1rem;
+    border-left: 3px solid var(--wait);
+    background: var(--wait-soft);
+    color: var(--wait);
+    font: 0.95rem var(--ui);
+}
+
+/* ── signing in ──────────────────────────────────────────────────────────── */
+
+/*
+    The invented patients, as buttons that sign you in.
+
+    A select, a password box, and the password printed underneath the form is a
+    form somebody fills in wrongly before they read the line under it -- which
+    is what happened the first time somebody else opened this. These are one
+    click each, and each says what that patient is here to show, so choosing one
+    is choosing what to look at rather than picking a name at random.
+*/
+.pick {
+    margin: 0 0 1.6rem;
+    padding: 1.1rem 1.2rem;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--seal);
+}
+
+.pick h2 {
+    margin: 0 0 0.2rem;
+    font: 600 1rem/1.3 var(--ui);
+}
+
+.pick > p {
+    margin: 0 0 0.9rem;
+    font: 0.88rem/1.5 var(--ui);
+    color: var(--ink-soft);
+}
+
+.whom {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.whom button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--line);
+    background: var(--raised);
+    color: inherit;
+    font: inherit;
     cursor: pointer;
 }
 
-a.open:hover, button:hover { border-color: var(--mark); }
+.whom button:hover,
+.whom button:focus-visible {
+    border-color: var(--seal);
+    background: var(--seal-soft);
+}
 
-form.stack { display: grid; gap: .8rem; max-width: 22rem; margin: 1.4rem 0; }
-label { display: grid; gap: .3rem; font-size: .85rem; color: var(--quiet); }
-input, select { font: inherit; padding: .45rem .55rem; border: 1px solid var(--line); border-radius: .3rem; }
+.whom .who {
+    display: block;
+    font: 600 1rem/1.3 var(--read);
+}
 
-.said { padding: .7rem .9rem; border-left: 3px solid var(--warn); background: var(--warn-ground); color: var(--warn); }
-.code { font-family: ui-monospace, Consolas, monospace; font-size: 1.2rem; letter-spacing: .18em; }
+.whom .has {
+    display: block;
+    margin-top: 0.15rem;
+    font: 0.78rem/1.4 var(--ui);
+    color: var(--ink-soft);
+}
 
-footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); color: var(--quiet); font-size: .82rem; }
+/* The typed way, kept: the checks drive it, and so does anybody who wants to. */
+details.byhand {
+    margin-bottom: 1.5rem;
+}
+
+details.byhand > summary {
+    cursor: pointer;
+    font: 0.88rem var(--ui);
+    color: var(--ink-soft);
+}
+
+details.byhand > summary:hover {
+    color: var(--ink);
+}
+
+form.stack {
+    display: grid;
+    gap: 0.9rem;
+    max-width: 22rem;
+    margin: 1rem 0 0;
+}
+
+label {
+    display: grid;
+    gap: 0.3rem;
+    font: 0.82rem var(--ui);
+    color: var(--ink-soft);
+}
+
+input,
+select {
+    font: 1rem var(--ui);
+    padding: 0.5rem 0.6rem;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+}
+
+input:focus-visible,
+select:focus-visible,
+button:focus-visible,
+a:focus-visible {
+    outline: 2px solid var(--seal);
+    outline-offset: 2px;
+}
+
+button {
+    justify-self: start;
+    font: 600 0.92rem var(--ui);
+    padding: 0.5rem 1.1rem;
+    border: 1px solid var(--seal);
+    background: var(--seal);
+    color: #fff;
+    cursor: pointer;
+}
+
+button:hover {
+    background: var(--seal-deep);
+    border-color: var(--seal-deep);
+}
+
+.bar button {
+    padding: 0.28rem 0.7rem;
+    font-size: 0.82rem;
+    background: none;
+    color: var(--seal);
+}
+
+.bar button:hover {
+    background: var(--seal-soft);
+}
+
+/* ── the documents ───────────────────────────────────────────────────────── */
 
 /*
-    The footer carries the only link on the page that leaves it, and a link with
-    no rule of its own comes out in the browser's blue on grey text. It gets the
-    portal's own blue, underlined because colour alone is not a signal, and a
-    ring on keyboard focus for the same reason.
+    A list and not a deck of cards. Somebody looking for one report reads down
+    the left edge, and the edge is where the state is: green for a report they
+    can open, amber for one that will ask for a code, slate for one nobody has
+    signed off yet.
 */
-footer p { margin: 0 0 .5rem; }
-footer .by { margin-bottom: 0; }
+.documents {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--line);
+    background: var(--card);
+}
 
-footer a { color: var(--mark); text-decoration: underline; text-underline-offset: .15em; }
-footer a:hover { color: var(--ink); }
-footer a:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; border-radius: .15rem; }
+.documents li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.7rem 1.2rem;
+    padding: 0.9rem 1.1rem;
+    border-top: 1px solid var(--line);
+    border-left: 4px solid var(--seal);
+}
+
+.documents li:first-child {
+    border-top: 0;
+}
+
+.documents li.waiting {
+    border-left-color: var(--draft);
+}
+
+.documents li.guarded {
+    border-left-color: var(--wait);
+}
+
+.what {
+    font: 600 1.05rem/1.35 var(--read);
+}
+
+.id {
+    font: 0.82rem var(--mono);
+    color: var(--ink-faint);
+}
+
+/* The state, said in words and not in a colour alone. */
+.state {
+    display: inline-block;
+    padding: 0.2rem 0.55rem;
+    font: 0.78rem var(--ui);
+    background: var(--draft-soft);
+    border: 1px solid var(--draft-line);
+    color: var(--draft);
+}
+
+a.open {
+    display: inline-block;
+    padding: 0.42rem 0.9rem;
+    font: 600 0.88rem var(--ui);
+    text-decoration: none;
+    background: var(--seal);
+    color: #fff;
+    white-space: nowrap;
+}
+
+a.open:hover {
+    background: var(--seal-deep);
+}
+
+a.open.guarded {
+    background: var(--card);
+    color: var(--wait);
+    border: 1px solid var(--wait-line);
+}
+
+a.open.guarded:hover {
+    background: var(--wait-soft);
+}
+
+/* ── the six digits ──────────────────────────────────────────────────────── */
+
+.code {
+    display: inline-block;
+    font: 600 1.35rem/1 var(--mono);
+    letter-spacing: 0.18em;
+    padding: 0.35rem 0.6rem;
+    background: var(--card);
+    border: 1px solid var(--wait-line);
+    color: var(--ink);
+}
+
+/* ── the bottom ──────────────────────────────────────────────────────────── */
+
+footer {
+    border-top: 1px solid var(--line);
+    max-width: 46rem;
+    margin-inline: auto;
+    padding: 1.5rem 1.25rem 2.5rem;
+    color: var(--ink-soft);
+    font: 0.85rem/1.6 var(--ui);
+}
+
+footer p {
+    margin: 0;
+    max-width: 44rem;
+}
+
+footer .by {
+    margin-top: 0.7rem;
+}
+
+footer a {
+    color: var(--seal);
+}
+
+@media (max-width: 34rem) {
+    .documents li {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
