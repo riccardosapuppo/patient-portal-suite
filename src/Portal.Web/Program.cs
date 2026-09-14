@@ -1,6 +1,7 @@
 using System.Security.Claims;
 
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 
@@ -103,7 +104,50 @@ app.Lifetime.ApplicationStarted.Register(() =>
         why);
 });
 
-app.Run();
+/*
+ * A port that is already taken is a sentence, not a stack trace.
+ *
+ * Kestrel's own answer is eleven frames ending in AddressInUseException, which
+ * says what happened to somebody who already knows and nothing to anybody else.
+ * It happens on every second start -- the usual cause is another copy of this
+ * one, still open in a tab -- and what the reader needs is the flag that fixes
+ * it, not a stack.
+ *
+ * Every other project in this portfolio says this in a line. This one did not
+ * until a publication run tried to start it while a copy was already up, and
+ * produced a page of frames.
+ *
+ * The host logs its own copy of the failure before the exception gets here, so
+ * there are still frames above this. Silencing that logger would hide every
+ * other way a start can fail, which is a worse trade than a reader scrolling
+ * past a stack to a sentence -- and the sentence is last, which is where the
+ * eye lands.
+ */
+try
+{
+    app.Run();
+}
+catch (IOException bother) when (bother.InnerException is AddressInUseException)
+{
+    /*
+     * Asked of the configuration, not of the application.
+     *
+     * The first version of this read `app.Urls` here, which throws: after the
+     * host has failed to start there is no server to ask, so the sentence meant
+     * to replace a stack trace produced a different one. Configuration is
+     * readable either way.
+     */
+    var taken = builder.Configuration["urls"]
+        ?? Environment.GetEnvironmentVariable("ASPNETCORE_URLS")
+        ?? "http://localhost:5000";
+
+    Console.Error.WriteLine($"Something is already listening on {taken}.");
+    Console.Error.WriteLine("Most likely another copy of this portal, still open.");
+    Console.Error.WriteLine("Stop it, or put this one somewhere else:");
+    Console.Error.WriteLine("  dotnet run --project src/Portal.Web -- --urls http://localhost:5001");
+
+    Environment.Exit(1);
+}
 
 /// <summary>
 /// Named so the tests can start this application in process and talk HTTP to it.
