@@ -73,6 +73,8 @@ public static class TheReadme
         var patients = Ward.Patients.Count;
         var documents = Ward.Everything().Count;
         var withNothing = Ward.Patients.Count(who => !Ward.Everything().Any(one => one.Belongs == who));
+        var withACode = Ward.Patients.Count(
+            who => Ward.Everything().Any(one => one.Belongs == who && one is { Released: true, Sensitive: true }));
 
         return
         [
@@ -91,6 +93,14 @@ public static class TheReadme
             // that was wrong.
             $"{Capital(Spelled(patients))} given names, {Spelled(documents)} documents of placeholder text",
             $"{Capital(Spelled(withNothing))} of the {Spelled(patients)} patients has no documents",
+
+            // And the sentence under the first screenshot, which describes the
+            // sign-in page card by card. It is the first thing anybody reads
+            // about this repository and it counts the ward three ways -- so it
+            // goes stale the same way the sentence above it already did once.
+            $"{Spelled(patients)} invented patients, each saying what signing in as them will show.",
+            $"{Capital(Spelled(withACode))} have a report that asks for a code, "
+                + $"{Spelled(withNothing)} has nothing at all.",
         ];
 
         int Count(string name) =>
