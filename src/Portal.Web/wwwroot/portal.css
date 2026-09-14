@@ -271,6 +271,9 @@ h1 {
 
 .whom button:hover,
 .whom button:focus-visible {
+    /* Named, not inherited from a state some other rule is in charge of. */
+    background: var(--card);
+    color: var(--ink);
     border-color: var(--seal);
     box-shadow: var(--lift-high);
     transform: translateY(-1px);
@@ -422,7 +425,24 @@ summary:focus-visible {
     outline-offset: 2px;
 }
 
-button {
+/*
+    The default button, and why it is written at zero specificity.
+
+    Green and filled is what a button looks like here unless something says
+    otherwise -- but "unless something says otherwise" has to be true of every
+    property, and written as a plain element rule it was not. The patient cards
+    are buttons that restate their background, their colour and their padding,
+    and they read correctly until somebody put a pointer on one: this rule's
+    :hover then repainted the card dark green while the name kept the dark ink
+    the card had asked for. Black on bottle green, and only while the mouse was
+    on it, which is the state nobody photographs.
+
+    :where() makes this whole block count for nothing in the cascade. Any rule
+    that names a button by class now wins on every property it mentions and,
+    just as importantly, on the ones it does not mention in a state it never
+    thought about.
+*/
+:where(button) {
     justify-self: start;
     font: 600 0.95rem var(--ui);
     padding: 0.62rem 1.25rem;
@@ -434,7 +454,7 @@ button {
     transition: background 0.12s ease;
 }
 
-button:hover {
+:where(button):hover {
     background: var(--seal-deep);
     border-color: var(--seal-deep);
 }

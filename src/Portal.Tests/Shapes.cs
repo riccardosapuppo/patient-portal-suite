@@ -1,8 +1,10 @@
 namespace Portal.Tests;
 
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 using Portal.Core;
+using Portal.Measure;
 using Xunit;
 
 /// <summary>
@@ -16,6 +18,55 @@ using Xunit;
 /// </remarks>
 public class Shapes
 {
+    /// <summary>
+    /// The default button look must stay out of the cascade's way.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Green and filled is what a button looks like here unless something says
+    /// otherwise, and the patient cards on the sign-in page are the otherwise:
+    /// they restate the background, the ink and the padding, and they read
+    /// correctly. Written as a plain element rule, though, the default also
+    /// owned <c>:hover</c> — a state the cards had no opinion about. Putting a
+    /// pointer on a card repainted it bottle green while the name kept the dark
+    /// ink the card had asked for, and the name vanished.
+    /// </para>
+    /// <para>
+    /// Nothing failed, nothing was logged, and no screenshot shows it: a hover
+    /// is not a state anybody photographs. It was found by a person moving a
+    /// mouse, which is the worst way to find anything.
+    /// </para>
+    /// <para>
+    /// <c>:where()</c> makes the block count for nothing, so a rule that names a
+    /// button by class wins on every property it mentions and on the ones it
+    /// never thought to mention. This holds that, because the repair is one
+    /// word and losing it again is one word too.
+    /// </para>
+    /// </remarks>
+    [Fact]
+    public void TheDefaultButtonLookCannotOutrankACardThatIsAButton()
+    {
+        var sheet = Path.Combine(TheReadme.Root(), "src", "Portal.Web", "wwwroot", "portal.css");
+        var css = File.ReadAllText(sheet);
+
+        // Read first, asserted after: a check that passed because it could not
+        // find the file is not a check.
+        Assert.True(css.Length > 0, $"{sheet} is empty, so nothing here was checked.");
+
+        Assert.Contains(":where(button)", css, StringComparison.Ordinal);
+
+        var element = Regex.Matches(css, @"(?m)^button\s*(:[\w-]+)?\s*\{")
+            .Select(one => one.Value.Trim())
+            .ToList();
+
+        Assert.True(
+            element.Count == 0,
+            "The default button look is written as an element rule again — "
+            + string.Join(", ", element)
+            + " — so it outranks nothing and overrules anything that styled a button by class "
+            + "in a state that rule did not mention.");
+    }
+
     [Fact]
     public void NothingCanAskTheArchiveAboutADocumentWithoutSayingWho()
     {

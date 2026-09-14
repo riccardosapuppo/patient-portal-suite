@@ -171,13 +171,14 @@ public static class TheReadme
     private static string Capital(string word) => char.ToUpperInvariant(word[0]) + word[1..];
 
     /// <summary>The repository this assembly was built inside.</summary>
+    /// <returns>Its folder.</returns>
     /// <remarks>
     /// Walked up from the assembly rather than taken from the working directory.
     /// <c>dotnet test</c>, <c>dotnet run --project</c> and the built dll do not
     /// agree about what the working directory is, and a check that passes because
     /// it could not find the file is not a check.
     /// </remarks>
-    private static string Root()
+    public static string Root()
     {
         for (var here = new DirectoryInfo(AppContext.BaseDirectory); here is not null; here = here.Parent)
         {
