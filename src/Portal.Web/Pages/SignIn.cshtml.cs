@@ -63,26 +63,36 @@ public sealed class SignInModel : PageModel
     /// invented and the page says so.
     /// </para>
     /// </remarks>
-    public IReadOnlyList<(string Who, string What)> Choices { get; } =
+    public IReadOnlyList<Choice> Choices { get; } =
         Ward.Patients
             .Select(who =>
             {
                 var theirs = Ward.Everything().Where(one => one.Belongs == who).ToList();
 
-                var parts = new List<string>();
-                var readable = theirs.Count(one => one.Released && !one.Sensitive);
-                var guarded = theirs.Count(one => one.Released && one.Sensitive);
-                var waiting = theirs.Count(one => !one.Released);
-
-                if (readable > 0) parts.Add($"{readable} to read");
-                if (guarded > 0) parts.Add($"{guarded} needing a code");
-                if (waiting > 0) parts.Add($"{waiting} not signed off");
-
-                return (
+                return new Choice(
                     who.Value,
-                    parts.Count == 0 ? "nothing yet — the empty page" : string.Join(", ", parts));
+                    theirs.Count(one => one.Released && !one.Sensitive),
+                    theirs.Count(one => one.Released && one.Sensitive),
+                    theirs.Count(one => !one.Released));
             })
             .ToList();
+
+    /// <summary>One invented patient, and what signing in as them shows.</summary>
+    /// <remarks>
+    /// Three counts rather than a sentence, so the page can colour them the way
+    /// the documents themselves are coloured: the same green, amber and slate
+    /// on both screens, so that picking the patient with the amber one is
+    /// picking the thing you are about to see.
+    /// </remarks>
+    /// <param name="Who">The patient.</param>
+    /// <param name="Readable">Released, and openable without anything further.</param>
+    /// <param name="Guarded">Released, and asks for a code first.</param>
+    /// <param name="Waiting">Not released: nobody has signed it off.</param>
+    public sealed record Choice(string Who, int Readable, int Guarded, int Waiting)
+    {
+        /// <summary>Whether this patient has nothing at all.</summary>
+        public bool Empty => Readable + Guarded + Waiting == 0;
+    }
 
     /// <summary>Show the form.</summary>
     public void OnGet()

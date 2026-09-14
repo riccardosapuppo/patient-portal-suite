@@ -41,7 +41,28 @@
                 <li>
                     <button type="submit" name="Patient" value="@one.Who">
                         <span class="who">@one.Who</span>
-                        <span class="has">@one.What</span>
+
+                        @* The same three colours the documents themselves use. *@
+                        <span class="has">
+                            @if (one.Empty)
+                            {
+                                <span class="none">nothing yet — the empty page</span>
+                            }
+                            @if (one.Readable > 0)
+                            {
+                                <span class="tag read"><i></i>@one.Readable to read</span>
+                            }
+                            @if (one.Guarded > 0)
+                            {
+                                <span class="tag guarded"><i></i>@one.Guarded needs a code</span>
+                            }
+                            @if (one.Waiting > 0)
+                            {
+                                <span class="tag waiting"><i></i>@one.Waiting not signed off</span>
+                            }
+                        </span>
+
+                        <span class="go">Open their file</span>
                     </button>
                 </li>
             }

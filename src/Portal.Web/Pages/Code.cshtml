@@ -28,11 +28,11 @@ else
         <p class="said">@Model.Said</p>
     }
 
-    <form class="stack" method="post">
+    <form class="stack tight" method="post">
         <input type="hidden" name="id" value="@Model.Accession" />
         <label>
             The six digits
-            <input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" />
+            <input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" autofocus />
         </label>
         <button type="submit">Open the document</button>
     </form>
