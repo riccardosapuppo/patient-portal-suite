@@ -1,6 +1,8 @@
 using System.Security.Claims;
 
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 
 using Portal.Core;
 using Portal.Store;
@@ -73,6 +75,33 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapRazorPages();
+
+/*
+ * Open the portal on the address it actually bound.
+ *
+ * After it has started, not before: a browser sent to a port nothing is
+ * listening on yet shows a connection refused, and whoever ran this reads that
+ * as the program being broken rather than as being early.
+ *
+ * And the address it bound, asked of the server, rather than the one the README
+ * quotes. They are the same until somebody passes --urls, and then they are
+ * not -- and a browser opened on the wrong one of the two is worse than none,
+ * because the page it shows belongs to whatever else is on that port.
+ */
+app.Lifetime.ApplicationStarted.Register(() =>
+{
+    var bound = app.Services
+        .GetService<IServer>()?
+        .Features.Get<IServerAddressesFeature>()?
+        .Addresses.FirstOrDefault();
+
+    var (opened, why) = OpenABrowser.Maybe(bound ?? "http://localhost:5000", args);
+
+    app.Logger.LogInformation(
+        opened ? "The portal is open in your browser: {At}" : "The portal is at {At}, not opened: {Why}",
+        bound ?? "http://localhost:5000",
+        why);
+});
 
 app.Run();
 

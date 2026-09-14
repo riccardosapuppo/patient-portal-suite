@@ -39,6 +39,16 @@ the numbers in the table above are read back out of it and compared. So does CI.
 
 ![A patient's own list: one released, one still a draft, one that needs a code](docs/documents.png)
 
+```
+dotnet run --project src/Portal.Web
+```
+
+The portal opens in your browser on <http://localhost:5000>. Sign in as any of
+the invented patients; the password is `ward` and the page says so. What it is
+arguing, and the measurement behind it, is below — it reads better once you have
+signed in as one patient and tried to reach another one's report. Everything
+else you can run is under [Before you start](#before-you-start).
+
 ---
 
 ## The one idea
@@ -95,7 +105,7 @@ dotnet --version        # 9.0.317 here; any 9.0.x will do
 ```
 
 ```
-dotnet test src/Portal.Tests            # 35 checks
+dotnet test src/Portal.Tests            # 39 checks
 dotnet run  --project src/Portal.Measure    # the five claims
 dotnet run  --project src/Portal.Web        # the portal, on http://localhost:5000
 ```
@@ -103,6 +113,13 @@ dotnet run  --project src/Portal.Web        # the portal, on http://localhost:50
 All three run anywhere the SDK does, Linux included, which is why CI is one job.
 Sign in as any of the invented patients; the password is `ward` and the page says
 so.
+
+The portal **opens itself in your browser** once it is listening — on the address
+it actually bound, asked of the server rather than assumed, because the two stop
+being the same the moment somebody passes `--urls`. It does not open with
+`--no-open`, with `NO_OPEN=1`, in CI, or when the output is redirected. That last
+one is not politeness: this suite starts the portal in process to talk HTTP to
+it, and without it `dotnet test` would open a browser per test.
 
 ---
 
@@ -114,7 +131,7 @@ so.
 | `Portal.Store` | The archive, in SQLite, where the binding is visible in a `WHERE` clause. And the invented ward. |
 | `Portal.Measure` | Runs the ward through both and prints the difference. Exits non-zero when a claim stops holding, or when the prose in this file stops agreeing with it. |
 | `Portal.Web` | ASP.NET Core, Razor Pages, a cookie. |
-| `Portal.Tests` | 35 checks: the archive asked directly, the portal driven over HTTP, three that are about the shape of the code rather than what it does, and one that holds this file to the number in this cell. |
+| `Portal.Tests` | 39 checks: the archive asked directly, the portal driven over HTTP, three that are about the shape of the code rather than what it does, and one that holds this file to the number in this cell. |
 | `tools/screenshots.sh` | The two pictures above, taken from the running portal rather than by hand. |
 
 ### The ward is invented, and that is not a detail
