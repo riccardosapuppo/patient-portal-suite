@@ -1,1 +1,10 @@
 * text=auto eol=lf
+
+# Declared, not detected. The reports in docs/ are PDFs that happen to contain
+# no byte git would recognise as binary -- they are plain ASCII from %PDF to
+# %%EOF -- so auto-detection is free to decide they are text and normalise
+# their line endings on the way in or out. A check compares one of them byte
+# for byte against the report the portal builds, and that check is the thing
+# that would go red on somebody else's machine for a reason nobody could see.
+*.pdf binary
+*.png binary

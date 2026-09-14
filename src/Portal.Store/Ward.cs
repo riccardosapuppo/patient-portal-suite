@@ -1,7 +1,5 @@
 namespace Portal.Store;
 
-using System.Text;
-
 using Portal.Core;
 
 /// <summary>
@@ -109,15 +107,9 @@ public static class Ward
         var id = new DocumentId($"ACC-{number:D6}");
         number += 137;
 
-        var text =
-            $"""
-            {title}
-            Patient: {who}
-            Accession: {id}
-
-            This document is invented. It exists so that a test can ask for it.
-            """;
-
-        return new Document(id, who, title, released, sensitive, Encoding.UTF8.GetBytes(text));
+        // A PDF, because that is what comes out of a reporting system, and
+        // because a file that opens in the browser's own viewer is the moment
+        // somebody sees the document was handed over and not merely listed.
+        return new Document(id, who, title, released, sensitive, Printed.Report(id, who, title, released));
     }
 }

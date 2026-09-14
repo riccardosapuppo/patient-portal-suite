@@ -79,7 +79,7 @@ public sealed class CodeModel(IDocuments documents, ITrail trail, SecondFactor c
         var answer = await documents.Answer(question, receipt, cancel);
         trail.Record(answer);
 
-        if (answer.WasGiven) return Handing.AsFile(answer.Given!);
+        if (answer.WasGiven) return Handing.AsFile(answer.Given!, Response);
 
         Said = "That code is not right, or it has run out. Ask for another.";
         OnTheScreen = (phones as CodesOnTheScreen)?.LastFor(question.By);

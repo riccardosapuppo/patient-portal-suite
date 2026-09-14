@@ -1,6 +1,7 @@
 namespace Portal.Tests;
 
 using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 
 using Microsoft.AspNetCore.Authorization;
@@ -98,8 +99,18 @@ public class Reaching : IClassFixture<WebApplicationFactory<Program>>
         var answer = await browser.GetAsync($"/Open?id={Hers.Id}");
 
         Assert.Equal(HttpStatusCode.OK, answer.StatusCode);
-        Assert.Equal("text/plain", answer.Content.Headers.ContentType?.MediaType);
-        Assert.Contains(Hers.Id.Value, await answer.Content.ReadAsStringAsync(), StringComparison.Ordinal);
+        Assert.Equal("application/pdf", answer.Content.Headers.ContentType?.MediaType);
+
+        // Inline, not a download. A report that opens in the browser's own
+        // viewer is read; one that lands in a downloads folder is found later,
+        // if at all -- and the name still carries the accession number.
+        var disposition = answer.Content.Headers.ContentDisposition;
+        Assert.Equal("inline", disposition?.DispositionType);
+        Assert.Contains(Hers.Id.Value, disposition?.FileName ?? string.Empty, StringComparison.Ordinal);
+
+        var file = await answer.Content.ReadAsByteArrayAsync();
+        Assert.StartsWith("%PDF-", Encoding.ASCII.GetString(file, 0, 8), StringComparison.Ordinal);
+        Assert.Contains(Hers.Id.Value, Encoding.ASCII.GetString(file), StringComparison.Ordinal);
     }
 
     [Fact]
@@ -213,7 +224,7 @@ public class Reaching : IClassFixture<WebApplicationFactory<Program>>
         ]);
 
         Assert.Equal(HttpStatusCode.OK, opened.StatusCode);
-        Assert.Equal("text/plain", opened.Content.Headers.ContentType?.MediaType);
+        Assert.Equal("application/pdf", opened.Content.Headers.ContentType?.MediaType);
     }
 
     [Fact]
@@ -244,7 +255,7 @@ public class Reaching : IClassFixture<WebApplicationFactory<Program>>
             new("code", digits),
         ]);
 
-        Assert.NotEqual("text/plain", tried.Content.Headers.ContentType?.MediaType);
+        Assert.NotEqual("application/pdf", tried.Content.Headers.ContentType?.MediaType);
     }
 
     [Fact]

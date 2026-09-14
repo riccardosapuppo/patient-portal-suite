@@ -94,11 +94,22 @@ public sealed class CodesOnTheScreen : ISendCodes
 public static class Handing
 {
     /// <summary>Send the document to the browser.</summary>
+    /// <remarks>
+    /// Inline rather than as a download, and the difference is the whole point
+    /// of the report being a PDF: a file that opens in the browser's own viewer
+    /// is read, and a file that lands in a downloads folder is found later, if
+    /// at all. The name is still on it, so saving it keeps the accession
+    /// number.
+    /// </remarks>
     /// <param name="document">What the archive handed back.</param>
+    /// <param name="response">The response, for the disposition header.</param>
     /// <returns>The file.</returns>
-    public static Microsoft.AspNetCore.Mvc.FileContentResult AsFile(Document document) =>
-        new(document.Content, "text/plain; charset=utf-8")
-        {
-            FileDownloadName = $"{document.Id}.txt",
-        };
+    public static Microsoft.AspNetCore.Mvc.FileContentResult AsFile(
+        Document document,
+        Microsoft.AspNetCore.Http.HttpResponse response)
+    {
+        response.Headers.ContentDisposition = $"inline; filename=\"{document.Id}.pdf\"";
+
+        return new Microsoft.AspNetCore.Mvc.FileContentResult(document.Content, "application/pdf");
+    }
 }

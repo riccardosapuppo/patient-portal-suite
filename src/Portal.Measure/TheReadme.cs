@@ -92,6 +92,7 @@ public static class TheReadme
             // And the ward the claims are counted over, which is the sentence
             // that was wrong.
             $"{Capital(Spelled(patients))} given names, {Spelled(documents)} documents of placeholder text",
+            $"The reports are PDFs, written out byte by byte rather than with a library,",
             $"{Capital(Spelled(withNothing))} of the {Spelled(patients)} patients has no documents",
 
             // And the sentence under the first screenshot, which describes the

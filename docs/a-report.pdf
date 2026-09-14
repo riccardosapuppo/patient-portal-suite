@@ -1,0 +1,180 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 2346 >>
+stream
+0.06 0.34 0.22 rg
+0 746 595 96 re f
+BT
+1 1 1 rg
+/F2 17 Tf
+57 790 Td (Patient portal) Tj
+ET
+BT
+0.72 0.85 0.79 rg
+/F1 9.5 Tf
+57 770 Td (Imaging and laboratory reporting) Tj
+ET
+BT
+1 1 1 rg
+/F2 11 Tf
+480.8 790 Td (ACC-100100) Tj
+ET
+BT
+0.72 0.85 0.79 rg
+/F1 9.5 Tf
+498.48 770 Td (Released) Tj
+ET
+0.99 0.95 0.89 rg
+0 720 595 26 re f
+BT
+0.54 0.31 0.07 rg
+/F2 9.5 Tf
+57 728 Td (This report is invented. Nobody was examined.) Tj
+ET
+BT
+0.06 0.13 0.1 rg
+/F2 21 Tf
+57 674 Td (Radiology report) Tj
+ET
+0.95 0.96 0.95 rg
+57 578 481 62 re f
+BT
+0.44 0.52 0.48 rg
+/F1 8.5 Tf
+71 616 Td (Patient) Tj
+ET
+BT
+0.06 0.13 0.1 rg
+/F2 11 Tf
+71 598 Td (giulia) Tj
+ET
+BT
+0.44 0.52 0.48 rg
+/F1 8.5 Tf
+221 616 Td (Accession) Tj
+ET
+BT
+0.06 0.13 0.1 rg
+/F2 11 Tf
+221 598 Td (ACC-100100) Tj
+ET
+BT
+0.44 0.52 0.48 rg
+/F1 8.5 Tf
+371 616 Td (Reported) Tj
+ET
+BT
+0.06 0.13 0.1 rg
+/F2 11 Tf
+371 598 Td (14 March) Tj
+ET
+BT
+0.06 0.34 0.22 rg
+/F2 11.5 Tf
+57 548 Td (Clinical details) Tj
+ET
+0.82 0.86 0.84 RG 0.6 w
+57 540 m 538 540 l S
+BT
+0.1 0.16 0.13 rg
+/F1 10.5 Tf
+57 522 Td (Invented referral text, so that the field is not empty.) Tj
+ET
+BT
+0.06 0.34 0.22 rg
+/F2 11.5 Tf
+57 489 Td (Technique) Tj
+ET
+0.82 0.86 0.84 RG 0.6 w
+57 481 m 538 481 l S
+BT
+0.1 0.16 0.13 rg
+/F1 10.5 Tf
+57 463 Td (Two views. No examination was performed and no equipment was used.) Tj
+ET
+BT
+0.06 0.34 0.22 rg
+/F2 11.5 Tf
+57 430 Td (Findings) Tj
+ET
+0.82 0.86 0.84 RG 0.6 w
+57 422 m 538 422 l S
+BT
+0.1 0.16 0.13 rg
+/F1 10.5 Tf
+57 404 Td (Placeholder paragraph, wrapped by hand so that this file is the same) Tj
+ET
+BT
+0.1 0.16 0.13 rg
+/F1 10.5 Tf
+57 389 Td (bytes on every machine that builds it. There is nothing to describe,) Tj
+ET
+BT
+0.1 0.16 0.13 rg
+/F1 10.5 Tf
+57 374 Td (because there was nothing to look at.) Tj
+ET
+BT
+0.06 0.34 0.22 rg
+/F2 11.5 Tf
+57 341 Td (Conclusion) Tj
+ET
+0.82 0.86 0.84 RG 0.6 w
+57 333 m 538 333 l S
+BT
+0.1 0.16 0.13 rg
+/F1 10.5 Tf
+57 315 Td (Nothing follows from this document. It exists so that a portal has) Tj
+ET
+BT
+0.1 0.16 0.13 rg
+/F1 10.5 Tf
+57 300 Td (something to hand over, and so that a check can ask for it.) Tj
+ET
+0.82 0.86 0.84 RG 0.6 w
+57 74 m 538 74 l S
+BT
+0.44 0.52 0.48 rg
+/F1 9 Tf
+57 58 Td (This report is invented. Nobody was examined.) Tj
+ET
+BT
+0.44 0.52 0.48 rg
+/F1 9 Tf
+57 44 Td (It is placeholder text in a demonstration portal, and is not a medical record.) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+7 0 obj
+<< /Title (Radiology report) >>
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000251 00000 n 
+0000002648 00000 n 
+0000002718 00000 n 
+0000002793 00000 n 
+trailer
+<< /Size 8 /Root 1 0 R /Info 7 0 R >>
+startxref
+2840
+%%EOF

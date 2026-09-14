@@ -41,7 +41,7 @@ public sealed class OpenModel(IDocuments documents, ITrail trail) : PageModel
         // carries the question the archive was actually given.
         trail.Record(answer);
 
-        if (answer.WasGiven) return Handing.AsFile(answer.Given!);
+        if (answer.WasGiven) return Handing.AsFile(answer.Given!, Response);
 
         Said = answer.Why switch
         {

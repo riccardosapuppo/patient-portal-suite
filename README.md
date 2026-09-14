@@ -116,7 +116,7 @@ dotnet --version        # 9.0.317 here; any 9.0.x will do
 ```
 
 ```
-dotnet test src/Portal.Tests            # 47 checks
+dotnet test src/Portal.Tests            # 51 checks
 dotnet run  --project src/Portal.Measure    # the five claims
 dotnet run  --project src/Portal.Web        # the portal, on http://localhost:5000
 ```
@@ -142,7 +142,7 @@ it, and without it `dotnet test` would open a browser per test.
 | `Portal.Store` | The archive, in SQLite, where the binding is visible in a `WHERE` clause. And the invented ward. |
 | `Portal.Measure` | Runs the ward through both and prints the difference. Exits non-zero when a claim stops holding, or when the prose in this file stops agreeing with it. |
 | `Portal.Web` | ASP.NET Core, Razor Pages, a cookie. |
-| `Portal.Tests` | 47 checks: the archive asked directly, the portal driven over HTTP, three that hold the sign-in cards to the ward they describe, three that keep a browser from showing yesterday's stylesheet, four that are about the shape of the code rather than what it does, and one that holds this file to the number in this cell. |
+| `Portal.Tests` | 51 checks: the archive asked directly, the portal driven over HTTP, three that hold the sign-in cards to the ward they describe, three that keep a browser from showing yesterday's stylesheet, four that read the reports back out of their own bytes, four that are about the shape of the code rather than what it does, and one that holds this file to the number in this cell. |
 | `tools/screenshots.sh` | The two pictures above, taken from the running portal rather than by hand. |
 
 ### The ward is invented, and that is not a detail
@@ -152,6 +152,24 @@ name, a date of birth and a report title together are a person, and a repository
 is forever. Nothing here comes from anywhere. Six given names, twelve documents
 of placeholder text, sequential accession numbers, and one accession number that
 is not in the archive at all — which the third claim depends on entirely.
+
+The reports are PDFs, written out byte by byte rather than with a library,
+because what comes out of a reporting system is a PDF and a portal that hands
+over three lines of plain text is a portal nobody believes. Each page says it
+is invented twice — a banner under the letterhead and a line at the foot —
+since a file leaves the portal and keeps going, into a download folder or an
+email, and arrives without the page that framed it.
+
+The cross-reference table at the end of each one is checked against the bytes
+around it, which is the only way to check it: a reader that finds the offsets
+wrong says nothing and rebuilds the table by scanning the file, so a malformed
+document opens and looks perfect. "I opened it and it was fine" is not a result.
+
+One of them is in this repository — [`docs/a-report.pdf`](docs/a-report.pdf) —
+so it can be opened rather than looked at in a screenshot. A committed file
+drifts from the code that made it, so a check rebuilds that report and compares
+the bytes; it can only do that because the bytes are settled, which is itself
+one of the four.
 
 One of the six patients has no documents, because a portal that only ever runs
 against patients who have some has never drawn its own empty page. That branch
@@ -389,7 +407,7 @@ HOLDS   A session expires at the same moment whichever clock reads it
     was the number that had been written.
 
 All 5 claims hold.
-And the 13 figures its prose quotes are these ones.
+And the 14 figures its prose quotes are these ones.
 ```
 
 ---
