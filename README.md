@@ -116,7 +116,7 @@ dotnet --version        # 9.0.317 here; any 9.0.x will do
 ```
 
 ```
-dotnet test src/Portal.Tests            # 42 checks
+dotnet test src/Portal.Tests            # 45 checks
 dotnet run  --project src/Portal.Measure    # the five claims
 dotnet run  --project src/Portal.Web        # the portal, on http://localhost:5000
 ```
@@ -142,7 +142,7 @@ it, and without it `dotnet test` would open a browser per test.
 | `Portal.Store` | The archive, in SQLite, where the binding is visible in a `WHERE` clause. And the invented ward. |
 | `Portal.Measure` | Runs the ward through both and prints the difference. Exits non-zero when a claim stops holding, or when the prose in this file stops agreeing with it. |
 | `Portal.Web` | ASP.NET Core, Razor Pages, a cookie. |
-| `Portal.Tests` | 42 checks: the archive asked directly, the portal driven over HTTP, three that hold the sign-in cards to the ward they describe, three that are about the shape of the code rather than what it does, and one that holds this file to the number in this cell. |
+| `Portal.Tests` | 45 checks: the archive asked directly, the portal driven over HTTP, three that hold the sign-in cards to the ward they describe, three that keep a browser from showing yesterday's stylesheet, three that are about the shape of the code rather than what it does, and one that holds this file to the number in this cell. |
 | `tools/screenshots.sh` | The two pictures above, taken from the running portal rather than by hand. |
 
 ### The ward is invented, and that is not a detail

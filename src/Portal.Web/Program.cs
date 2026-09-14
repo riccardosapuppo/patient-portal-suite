@@ -71,7 +71,30 @@ builder.Services.AddSingleton(services => new SecondFactor(
 var app = builder.Build();
 
 app.UseStatusCodePagesWithReExecute("/Error", "?code={0}");
-app.UseStaticFiles();
+
+/*
+ * The stylesheet is revalidated rather than trusted.
+ *
+ * Static files go out with an ETag and a Last-Modified and nothing else, and a
+ * response with no Cache-Control is not uncached: the browser is free to guess
+ * how long it stays fresh, and the usual guess is a tenth of the file's age.
+ * A stylesheet that had not been touched for a week is therefore fresh for
+ * most of a day, and the ETag sitting right beside it is never asked about.
+ *
+ * Which is how somebody edits this portal, restarts it, reloads, and is shown
+ * the page they had before -- with nothing anywhere saying so. It happened to
+ * the first person who changed the look of this and went looking for the bug
+ * in their own CSS.
+ *
+ * "no-cache" does not mean do not store it. It means store it and ask before
+ * using it, so the ETag does the job it was already doing the work to produce:
+ * the usual answer is 304 and no body. The saving this gives up is one
+ * round trip on a page that is served from the same machine.
+ */
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = serving => serving.Context.Response.Headers.CacheControl = "no-cache",
+});
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
