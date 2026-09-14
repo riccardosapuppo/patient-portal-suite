@@ -72,17 +72,26 @@ public class Opening
     [Fact]
     public void NothingOpensWhileThisSuiteIsRunning()
     {
-        // The output is redirected under `dotnet test`, which is what makes this
-        // assertion possible at all -- and is exactly the guard being asserted.
-        // If it ever stopped holding, the symptom would be this suite opening a
-        // browser per test, which nobody would mistake for a check.
-        var (opened, why) = OpenABrowser.Maybe("http://localhost:5000", []);
+        // CI cleared first, and that is the whole lesson of this test.
+        //
+        // The assertion is about the redirected-output guard -- the one that
+        // keeps this suite from opening a browser per test, since it starts the
+        // portal in process. Written without clearing CI it passed here and
+        // failed on the first runner that saw it, because CI is set there and
+        // answers before this guard does: "this is CI", not "terminal". A test
+        // that asserts which of four guards won is a test about the machine it
+        // was written on.
+        Withenvironment("CI", null, () =>
+        {
+            var (opened, why) = OpenABrowser.Maybe("http://localhost:5000", []);
 
-        Assert.False(opened);
-        Assert.Contains("terminal", why);
+            Assert.False(opened);
+            Assert.Contains("terminal", why);
+        });
     }
 
-    private static void Withenvironment(string name, string value, Action body)
+    /// <summary>Set it, or clear it with null, for the length of one check.</summary>
+    private static void Withenvironment(string name, string? value, Action body)
     {
         var before = Environment.GetEnvironmentVariable(name);
         Environment.SetEnvironmentVariable(name, value);
