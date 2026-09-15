@@ -95,8 +95,20 @@ public sealed class SignInModel : PageModel
     }
 
     /// <summary>Show the form.</summary>
-    public void OnGet()
+    /// <param name="stale">
+    /// Set when the person was sent here by <see cref="WhenTheFormWentStale"/>,
+    /// having pressed a button on a page drawn before somebody signed in on
+    /// this browser.
+    /// </param>
+    public void OnGet(string? stale)
     {
+        if (string.IsNullOrEmpty(stale)) return;
+
+        // Not "an error occurred". It says what happened, that the page in
+        // front of them is the fresh one, and what to do -- which is the
+        // difference between a refusal and a dead end.
+        Said = "Somebody signed in on this browser while that page was open, so it "
+            + "would not submit. This one is fresh: pick a patient again.";
     }
 
     /// <summary>Take the form.</summary>

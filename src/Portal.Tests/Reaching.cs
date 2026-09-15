@@ -302,7 +302,19 @@ public class Reaching : IClassFixture<WebApplicationFactory<Program>>
             new KeyValuePair<string, string>("password", SignInModel.ThePassword),
         ]));
 
-        Assert.Equal(HttpStatusCode.BadRequest, answer.StatusCode);
+        // The refusal is now a redirect back to the form rather than a bare
+        // 400, because a bare 400 is a browser error page in the language of
+        // the machine with no way back. This check is therefore not about the
+        // status code at all: it is about the post not having worked.
+        Assert.Equal(HttpStatusCode.Redirect, answer.StatusCode);
+        Assert.Contains("/SignIn", answer.Headers.Location?.OriginalString ?? string.Empty, StringComparison.Ordinal);
+
+        // Which is the part a status code would not have told us. Nobody is
+        // signed in, so the list still turns the browser away.
+        using var list = await browser.GetAsync("/");
+
+        Assert.Equal(HttpStatusCode.Redirect, list.StatusCode);
+        Assert.Contains("/SignIn", list.Headers.Location?.OriginalString ?? string.Empty, StringComparison.Ordinal);
     }
 
     [Fact]

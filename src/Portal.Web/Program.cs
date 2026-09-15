@@ -11,6 +11,11 @@ using Portal.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// A stale antiforgery token sends somebody back to the form with a sentence
+// rather than to the browser's own error page. See WhenTheFormWentStale.
+builder.Services.Configure<Microsoft.AspNetCore.Mvc.MvcOptions>(
+    options => options.Filters.Add<WhenTheFormWentStale>());
+
 builder.Services.AddRazorPages(options =>
 {
     // Signed in by default, anonymous by exception.
@@ -95,6 +100,28 @@ app.UseStaticFiles(new StaticFileOptions
 {
     OnPrepareResponse = serving => serving.Context.Response.Headers.CacheControl = "no-cache",
 });
+/*
+ * Nothing the portal composes is kept by the browser.
+ *
+ * The list of somebody's reports was already going out as no-store, and that
+ * was luck rather than a decision: the cookie handler sets it when it renews a
+ * cookie, for reasons that have nothing to do with privacy, and it stops the
+ * day the renewal does. The report itself -- the one byte sequence in this
+ * repository worth protecting -- went out with no cache header at all, free
+ * for the browser to keep and hand to whoever sits down next and presses back.
+ *
+ * So it is said here, deliberately, for everything the portal composes. Static
+ * files were dealt with above and keep their own revalidation: a stylesheet is
+ * not somebody's radiology report.
+ */
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.CacheControl = "no-store, no-cache, must-revalidate";
+    context.Response.Headers.Pragma = "no-cache";
+
+    await next();
+});
+
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
