@@ -28,7 +28,15 @@ else
         <p class="said">@Model.Said</p>
     }
 
-    <form class="stack tight" method="post">
+    @*
+        Into its own tab, so this page is still here afterwards.
+
+        A code opens its document once. Handing the file back over this page
+        would leave somebody looking at a PDF with a spent code behind them and
+        nothing to press -- and asking for another code is not a navigation, it
+        is starting again.
+    *@
+    <form class="stack tight" method="post" target="_blank">
         <input type="hidden" name="id" value="@Model.Accession" />
         <label>
             The six digits
@@ -36,4 +44,6 @@ else
         </label>
         <button type="submit">Open the document</button>
     </form>
+
+    <p><a class="back" href="/">Back to your documents</a></p>
 }

@@ -47,9 +47,40 @@ else
                 }
                 else
                 {
-                    <a class="open" href="/Open?id=@one.Id">Open</a>
+                    @*
+                        A real link to the real document, opening in its own tab
+                        on its own. viewer.js intercepts the press and shows the
+                        same URL in the dialog below, so the list stays where it
+                        is; with the script turned off the report still opens,
+                        beside the list rather than over it.
+                    *@
+                    <a class="open" href="/Open?id=@one.Id" target="_blank" rel="noopener"
+                       data-open="@one.Id" data-what="@one.Title">Open</a>
                 }
             </li>
         }
     </ul>
+
+    @*
+        The report, on top of the list rather than instead of it.
+
+        Empty until something is opened: the frame is given an address on the
+        way in and has it taken away again on the way out, so a report is never
+        left loaded behind a closed dialog.
+    *@
+    <dialog class="viewer">
+        <div class="viewer-bar">
+            <span class="viewer-said">
+                <span class="viewer-what"></span>
+                <span class="viewer-id"></span>
+            </span>
+
+            <a class="viewer-tab" target="_blank" rel="noopener">Open in a new tab</a>
+            <button type="button" class="viewer-shut">Close</button>
+        </div>
+
+        <iframe class="viewer-page" title="The report"></iframe>
+    </dialog>
+
+    <script src="~/viewer.js" defer></script>
 }

@@ -116,7 +116,7 @@ dotnet --version        # 9.0.317 here; any 9.0.x will do
 ```
 
 ```
-dotnet test src/Portal.Tests            # 53 checks
+dotnet test src/Portal.Tests            # 55 checks
 dotnet run  --project src/Portal.Measure    # the five claims
 dotnet run  --project src/Portal.Web        # the portal, on http://localhost:5000
 ```
@@ -142,7 +142,7 @@ it, and without it `dotnet test` would open a browser per test.
 | `Portal.Store` | The archive, in SQLite, where the binding is visible in a `WHERE` clause. And the invented ward. |
 | `Portal.Measure` | Runs the ward through both and prints the difference. Exits non-zero when a claim stops holding, or when the prose in this file stops agreeing with it. |
 | `Portal.Web` | ASP.NET Core, Razor Pages, a cookie. |
-| `Portal.Tests` | 53 checks: the archive asked directly, the portal driven over HTTP, three that hold the sign-in cards to the ward they describe, three that keep a browser from showing yesterday's stylesheet, four that read the reports back out of their own bytes, two about a browser with two of its pages open, four that are about the shape of the code rather than what it does, and one that holds this file to the number in this cell. |
+| `Portal.Tests` | 55 checks: the archive asked directly, the portal driven over HTTP, three that hold the sign-in cards to the ward they describe, three that keep a browser from showing yesterday's stylesheet, four that read the reports back out of their own bytes, two about a browser with two of its pages open, two that keep every way out of the list a two-way street, four that are about the shape of the code rather than what it does, and one that holds this file to the number in this cell. |
 | `tools/screenshots.sh` | The two pictures above, taken from the running portal rather than by hand. |
 
 ### The ward is invented, and that is not a detail
@@ -164,6 +164,19 @@ The cross-reference table at the end of each one is checked against the bytes
 around it, which is the only way to check it: a reader that finds the offsets
 wrong says nothing and rebuilds the table by scanning the file, so a malformed
 document opens and looks perfect. "I opened it and it was fine" is not a result.
+
+Pressing **Open** brings the report up over the list rather than navigating to
+it, because the list is the place you work from and the way back out of a
+browser's document viewer is the back button — the one button somebody using a
+portal has been taught not to trust, and the one this portal spends a check
+making sure shows them nothing.
+
+![A report open over the list it was on, with the list still behind it](docs/reading.png)
+
+The dialog is an enhancement and not a mechanism: every Open is a real link to
+the real document and opens in its own tab on its own. Turn the script off and
+the portal still hands over every report — the list simply stays behind in the
+other tab. What the checks hold is that claim, not the dialog.
 
 One of them is in this repository — [`docs/a-report.pdf`](docs/a-report.pdf) —
 so it can be opened rather than looked at in a screenshot. A committed file

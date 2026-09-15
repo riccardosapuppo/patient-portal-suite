@@ -551,6 +551,108 @@ a.open.guarded:hover {
     background: #f9e9cf;
 }
 
+/* ── the report, on top of the list ──────────────────────────────────────── */
+
+/*
+    A sheet of paper handed to you over the page you were on.
+
+    Not a full-screen takeover: the list stays visible round the edges, which
+    is the whole point of it being a dialog rather than a navigation. The bar
+    along the top carries the report's name and its accession number, because
+    a viewer showing "a document" is a viewer somebody has to trust.
+*/
+.viewer {
+    /*
+        Wide enough for an A4 page at its own size plus the gutter the
+        browser's viewer keeps to the left of it. Narrower and the reader
+        scrolls sideways through a report, which is the one thing a page of
+        A4 should never ask anybody to do.
+    */
+    width: min(72rem, 96vw);
+    height: min(88vh, 58rem);
+    max-width: none;
+    max-height: none;
+    padding: 0;
+    border: 0;
+    border-radius: 14px;
+    background: var(--card);
+    box-shadow: var(--lift-high);
+    overflow: hidden;
+}
+
+.viewer::backdrop {
+    background: rgb(4 18 12 / 55%);
+}
+
+.viewer[open] {
+    display: flex;
+    flex-direction: column;
+}
+
+.viewer-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem 1rem;
+    padding: 0.85rem 1.1rem;
+    background: var(--seal);
+    background-image: linear-gradient(180deg, var(--seal-lit) 0%, var(--seal) 100%);
+    color: #fff;
+}
+
+.viewer-said {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.2rem 0.7rem;
+    margin-right: auto;
+    min-width: 0;
+}
+
+.viewer-what {
+    font: 600 1.05rem/1.25 var(--read);
+    letter-spacing: -0.01em;
+}
+
+.viewer-id {
+    font: 0.78rem var(--mono);
+    letter-spacing: 0.02em;
+    color: #bcdccb;
+}
+
+.viewer-tab {
+    font: 0.84rem var(--ui);
+    color: #d8ece1;
+}
+
+.viewer-shut {
+    padding: 0.34rem 0.9rem;
+    font: 600 0.84rem var(--ui);
+    color: #fff;
+    background: rgb(255 255 255 / 12%);
+    border: 1px solid rgb(255 255 255 / 30%);
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.viewer-shut:hover {
+    background: rgb(255 255 255 / 22%);
+}
+
+/* The document itself, filling everything the bar left. */
+.viewer-page {
+    flex: 1;
+    width: 100%;
+    border: 0;
+    background: var(--raised);
+}
+
+/* And the way back, wherever a page is a step rather than a destination. */
+a.back {
+    font: 0.92rem var(--ui);
+    color: var(--seal);
+}
+
 /* ── the six digits ──────────────────────────────────────────────────────── */
 
 .code {
