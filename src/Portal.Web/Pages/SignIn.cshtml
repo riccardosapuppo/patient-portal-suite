@@ -70,27 +70,45 @@
     </form>
 </section>
 
-<details class="byhand">
-    <summary>Or type it</summary>
+@*
+    The typed way, behind a button once there is a script to open it with.
 
-    <form class="stack" method="post">
-        <label>
-            Patient
-            <select name="Patient" asp-for="Patient">
-                @foreach (var one in Model.Everyone)
-                {
-                    <option value="@one">@one</option>
-                }
-            </select>
-        </label>
+    It is written as a dialog that is already open, and the script closes it and
+    reveals the button. That way round on purpose: with no script the form is
+    simply on the page and works, and the button that would do nothing is never
+    shown. A way in that depends on JavaScript having run is a way in somebody
+    does not have.
+*@
+<button type="button" class="typed-open" hidden>Or type it</button>
 
-        <label>
-            Password
-            <input type="password" name="password" autocomplete="current-password" />
-        </label>
+<dialog class="typed" open>
+    <div class="typed-bar">
+        <span class="typed-what">Type it instead</span>
+        <button type="button" class="typed-shut">Close</button>
+    </div>
 
-        <button type="submit">Sign in</button>
-    </form>
+    <div class="typed-body">
+        <form class="stack" method="post">
+            <label>
+                Patient
+                <select name="Patient" asp-for="Patient">
+                    @foreach (var one in Model.Everyone)
+                    {
+                        <option value="@one">@one</option>
+                    }
+                </select>
+            </label>
 
-    <p class="lead">The password for every invented patient is <code>@SignInModel.ThePassword</code>.</p>
-</details>
+            <label>
+                Password
+                <input type="password" name="password" autocomplete="current-password" />
+            </label>
+
+            <button type="submit">Sign in</button>
+        </form>
+
+        <p class="lead">The password for every invented patient is <code>@SignInModel.ThePassword</code>.</p>
+    </div>
+</dialog>
+
+<script src="~/typed.js" defer></script>

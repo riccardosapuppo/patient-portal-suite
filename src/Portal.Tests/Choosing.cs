@@ -93,6 +93,39 @@ public class Choosing : IClassFixture<WebApplicationFactory<Program>>
         Assert.Equal(cards.Count, Times(page, "Open their file"));
     }
 
+    [Fact]
+    public async Task TheTypedWayIsNotBehindAScript()
+    {
+        // The cards are the way in and the typed form is the thing beside
+        // them, now behind a button -- but behind a button only once there is
+        // a script to open it with.
+        //
+        // The markup therefore ships the dialog already open and the button
+        // hidden, and the script does it the other way round. Written the
+        // obvious way round instead, a browser that never runs the script gets
+        // a page with a dead button on it and no form at all: a way in that
+        // depends on JavaScript having run is a way in somebody does not have.
+        //
+        // This is what the checks in Reaching drive, so losing it would not
+        // merely lose a way in -- it would take the checks with it.
+        using var browser = portal.CreateClient();
+        var page = await browser.GetStringAsync("/SignIn");
+
+        // Open in the markup, so it is on the page before anything runs.
+        Assert.Contains("<dialog class=\"typed\" open>", page, StringComparison.Ordinal);
+
+        // And the opener hidden in the markup, so nothing dead is ever shown.
+        Assert.Contains("class=\"typed-open\" hidden", page, StringComparison.Ordinal);
+
+        // The form itself, with everybody on it and somewhere to type.
+        foreach (var who in Ward.Patients)
+        {
+            Assert.Contains($"<option value=\"{who}\">", page, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("type=\"password\"", page, StringComparison.Ordinal);
+    }
+
     private static int Times(string page, string phrase)
     {
         var found = 0;

@@ -464,25 +464,176 @@ h1 {
     text-underline-offset: 2px;
 }
 
-/* The typed way, kept: the checks drive it, and so does anybody who wants to. */
-details.byhand {
-    margin-bottom: 1rem;
-}
+/* ── the typed way ───────────────────────────────────────────────────────── */
 
-details.byhand > summary {
-    display: inline-block;
-    cursor: pointer;
+/*
+    The way in for anybody who would rather type it, and for the checks, which
+    drive this form rather than the cards.
+
+    It is a quiet control and stays one: the cards are the way in, and this is
+    the thing beside them. Given a button of the portal's own green it would
+    compete with six cards for the same decision.
+*/
+.typed-open {
     /* Pulled back by its own padding, so the word starts on the page's edge. */
-    margin-left: -0.8rem;
+    margin: 0 0 1rem -0.8rem;
     padding: 0.4rem 0.8rem;
+    border: 0;
     border-radius: 6px;
-    font-size: 0.88rem;
+    background: none;
+    font: 0.92rem var(--ui);
     color: var(--ink-soft);
+    cursor: pointer;
 }
 
-details.byhand > summary:hover {
+.typed-open:hover {
     background: var(--raised);
     color: var(--ink);
+}
+
+.typed {
+    width: min(26rem, 94vw);
+    max-width: none;
+    padding: 0;
+    border: 0;
+    border-radius: 14px;
+    background: var(--card);
+    box-shadow: var(--lift-high);
+    overflow: hidden;
+}
+
+.typed-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 1.1rem;
+    background: var(--seal);
+    background-image: linear-gradient(180deg, var(--seal-lit) 0%, var(--seal) 100%);
+    color: #fff;
+}
+
+.typed-what {
+    font: 600 1.05rem/1.25 var(--read);
+    letter-spacing: -0.01em;
+}
+
+.typed-shut {
+    padding: 0.34rem 0.9rem;
+    font: 600 0.84rem var(--ui);
+    color: #fff;
+    background: rgb(255 255 255 / 12%);
+    border: 1px solid rgb(255 255 255 / 30%);
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.typed-shut:hover {
+    background: rgb(255 255 255 / 22%);
+}
+
+.typed-body {
+    padding: 1.2rem;
+}
+
+.typed-body form.stack {
+    margin: 0;
+    padding: 0;
+    max-width: none;
+    border: 0;
+    background: none;
+    box-shadow: none;
+}
+
+.typed-body .lead {
+    margin: 1.1rem 0 0;
+    font-size: 0.88rem;
+}
+
+/*
+    With no script the dialog is left open, and an open dialog is a block on the
+    page. It is given the card's own frame then, so it reads as part of the page
+    rather than as something that failed to close.
+*/
+.typed[open]:not(:modal) {
+    margin: 0 0 1.5rem;
+    border: 1px solid var(--line);
+    box-shadow: var(--lift);
+}
+
+/* ── how the two dialogs arrive ──────────────────────────────────────────── */
+
+/*
+    Motion that answers a press, which is the only kind here.
+
+    A dialog that appears instantly is a page that changed while you were
+    looking at it; a short rise and fade says where it came from. Nothing else
+    in this portal moves on its own -- no entrances on scroll, nothing on load.
+    This is read by people who are worried, and movement they did not ask for
+    is one more thing to interpret.
+
+    display and overlay have to be named in the transition, or the dialog is
+    taken off the screen before the fade has anywhere to happen.
+*/
+.viewer,
+.typed {
+    opacity: 0;
+    transform: translateY(0.6rem) scale(0.985);
+    transition:
+        opacity 0.18s ease,
+        transform 0.18s cubic-bezier(0.2, 0.8, 0.3, 1),
+        overlay 0.18s ease allow-discrete,
+        display 0.18s ease allow-discrete;
+}
+
+.viewer[open],
+.typed[open] {
+    opacity: 1;
+    transform: none;
+}
+
+@starting-style {
+    .viewer[open],
+    .typed[open] {
+        opacity: 0;
+        transform: translateY(0.6rem) scale(0.985);
+    }
+}
+
+.viewer::backdrop,
+.typed::backdrop {
+    background: rgb(4 18 12 / 0%);
+    transition:
+        background 0.18s ease,
+        overlay 0.18s ease allow-discrete,
+        display 0.18s ease allow-discrete;
+}
+
+.viewer[open]::backdrop,
+.typed[open]::backdrop {
+    background: rgb(4 18 12 / 55%);
+}
+
+@starting-style {
+    .viewer[open]::backdrop,
+    .typed[open]::backdrop {
+        background: rgb(4 18 12 / 0%);
+    }
+}
+
+/* Asked for, and meant: the dialog still arrives, it simply arrives at once. */
+@media (prefers-reduced-motion: reduce) {
+    .viewer,
+    .typed,
+    .viewer::backdrop,
+    .typed::backdrop {
+        transition: none;
+    }
+
+    .viewer,
+    .typed {
+        transform: none;
+    }
 }
 
 form.stack {
@@ -677,10 +828,6 @@ a.open.guarded:hover {
     background: var(--card);
     box-shadow: var(--lift-high);
     overflow: hidden;
-}
-
-.viewer::backdrop {
-    background: rgb(4 18 12 / 55%);
 }
 
 .viewer[open] {

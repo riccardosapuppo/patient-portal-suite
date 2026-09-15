@@ -48,8 +48,15 @@ will show. Two have a report that asks for a code, one has nothing at all.
 There is nothing to remember and nothing to type. The password is `ward`, it is
 in this file and in the source, and it is in the form — a password nobody can
 use on anything is not a credential, and making somebody type it teaches them
-nothing about the part of this that is real. The typed form is still there,
-folded up, because the checks drive it.
+nothing about the part of this that is real.
+
+**Or type it** is still there, behind a button, because the checks drive that
+form rather than the cards. Behind a button only once there is a script to open
+it with, though: the page ships the dialog already open and the button hidden,
+and the script does it the other way round. Written the obvious way round, a
+browser that never runs the script would get a dead button and no form — and a
+way in that depends on JavaScript having run is a way in somebody does not
+have.
 
 Then try to reach another patient's report. The argument below reads better once
 you have.
@@ -116,7 +123,7 @@ dotnet --version        # 9.0.317 here; any 9.0.x will do
 ```
 
 ```
-dotnet test src/Portal.Tests            # 57 checks
+dotnet test src/Portal.Tests            # 58 checks
 dotnet run  --project src/Portal.Measure    # the five claims
 dotnet run  --project src/Portal.Web        # the portal, on http://localhost:5000
 ```
@@ -142,7 +149,7 @@ it, and without it `dotnet test` would open a browser per test.
 | `Portal.Store` | The archive, in SQLite, where the binding is visible in a `WHERE` clause. And the invented ward. |
 | `Portal.Measure` | Runs the ward through both and prints the difference. Exits non-zero when a claim stops holding, or when the prose in this file stops agreeing with it. |
 | `Portal.Web` | ASP.NET Core, Razor Pages, a cookie. |
-| `Portal.Tests` | 57 checks: the archive asked directly, the portal driven over HTTP, three that hold the sign-in cards to the ward they describe, three that keep a browser from showing yesterday's stylesheet, four that read the reports back out of their own bytes, two about a browser with two of its pages open, two that keep every way out of the list a two-way street, two that fetch the typeface and the mark rather than assuming they arrived, four that are about the shape of the code rather than what it does, and one that holds this file to the number in this cell. |
+| `Portal.Tests` | 58 checks: the archive asked directly, the portal driven over HTTP, four that hold the sign-in page to the ward it describes, three that keep a browser from showing yesterday's stylesheet, four that read the reports back out of their own bytes, two about a browser with two of its pages open, two that keep every way out of the list a two-way street, two that fetch the typeface and the mark rather than assuming they arrived, four that are about the shape of the code rather than what it does, and one that holds this file to the number in this cell. |
 | `tools/screenshots.sh` | The two pictures above, taken from the running portal rather than by hand. |
 
 ### The ward is invented, and that is not a detail
