@@ -127,7 +127,21 @@
     --ui: 'Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
     --mono: 'Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
 
-    --hold: min(48rem, 100%);
+    /*
+        The page, and why it is not a reading measure.
+
+        It was 48rem, which is the width a paragraph wants and the width this
+        whole portal was given -- so a list of three documents sat in a column
+        down the middle of a wide screen with half the window empty either
+        side. A measure is for prose. A list is not prose: the question it
+        answers is which of these can I read, and that is answered by seeing
+        them, not by reading a column.
+
+        So the shell is wide and the prose is held back on its own, by the
+        max-width on .lead and on the footer. The two jobs are separate and
+        were being done by one number.
+    */
+    --hold: min(76rem, 100%);
 
     /*
         One left edge for the whole page.
@@ -310,11 +324,24 @@ h1 {
 
 .whom {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
     gap: 0.8rem;
     margin: 0;
     padding: 0;
     list-style: none;
+}
+
+/*
+    Three across, once there is room, and not as many as will fit.
+
+    Six cards in four columns is four and then two, which reads as a mistake
+    rather than as a grid. The ward has six patients and three columns give it
+    two full rows, so the shape of the page says how many there are.
+*/
+@media (min-width: 62rem) {
+    .whom {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 /* The row stretches, the card fills the row: six cards of one height. */
