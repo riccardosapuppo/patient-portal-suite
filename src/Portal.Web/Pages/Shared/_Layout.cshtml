@@ -12,13 +12,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@ViewData["Title"] — Patient portal</title>
     <link rel="stylesheet" href="~/portal.css" />
+    <link rel="icon" href="~/favicon.svg" type="image/svg+xml" />
 </head>
 <body>
     <p class="invented">Every patient and every document in this portal is invented.</p>
 
     <header>
         <div class="bar">
-            <a class="mark" href="/">Patient portal</a>
+            @*
+                The mark: a sheet, and a seal on the corner of it.
+
+                Drawn here rather than fetched, and in currentColor, so it is
+                white on the band and green anywhere else it is ever used. It
+                is the one piece of this portal that says what the portal is
+                for without a sentence -- a document addressed to one person
+                and to nobody else -- and the same two shapes are on the tab
+                and at the top of every report.
+            *@
+            <a class="mark" href="/">
+                <svg class="mark-seal" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+                    <rect x="3.5" y="3" width="16" height="20" rx="2.6"
+                          fill="none" stroke="currentColor" stroke-width="2.4" />
+                    <circle cx="20.5" cy="24" r="7.5" fill="var(--seal)" />
+                    <circle cx="20.5" cy="24" r="5.2" fill="currentColor" />
+                </svg>
+
+                <span>Patient portal</span>
+            </a>
             @if (Who.SignedIn(User) is { } patient)
             {
                 @*

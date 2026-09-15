@@ -116,7 +116,7 @@ dotnet --version        # 9.0.317 here; any 9.0.x will do
 ```
 
 ```
-dotnet test src/Portal.Tests            # 55 checks
+dotnet test src/Portal.Tests            # 57 checks
 dotnet run  --project src/Portal.Measure    # the five claims
 dotnet run  --project src/Portal.Web        # the portal, on http://localhost:5000
 ```
@@ -142,7 +142,7 @@ it, and without it `dotnet test` would open a browser per test.
 | `Portal.Store` | The archive, in SQLite, where the binding is visible in a `WHERE` clause. And the invented ward. |
 | `Portal.Measure` | Runs the ward through both and prints the difference. Exits non-zero when a claim stops holding, or when the prose in this file stops agreeing with it. |
 | `Portal.Web` | ASP.NET Core, Razor Pages, a cookie. |
-| `Portal.Tests` | 55 checks: the archive asked directly, the portal driven over HTTP, three that hold the sign-in cards to the ward they describe, three that keep a browser from showing yesterday's stylesheet, four that read the reports back out of their own bytes, two about a browser with two of its pages open, two that keep every way out of the list a two-way street, four that are about the shape of the code rather than what it does, and one that holds this file to the number in this cell. |
+| `Portal.Tests` | 57 checks: the archive asked directly, the portal driven over HTTP, three that hold the sign-in cards to the ward they describe, three that keep a browser from showing yesterday's stylesheet, four that read the reports back out of their own bytes, two about a browser with two of its pages open, two that keep every way out of the list a two-way street, two that fetch the typeface and the mark rather than assuming they arrived, four that are about the shape of the code rather than what it does, and one that holds this file to the number in this cell. |
 | `tools/screenshots.sh` | The two pictures above, taken from the running portal rather than by hand. |
 
 ### The ward is invented, and that is not a detail
@@ -172,6 +172,17 @@ portal has been taught not to trust, and the one this portal spends a check
 making sure shows them nothing.
 
 ![A report open over the list it was on, with the list still behind it](docs/reading.png)
+
+The portal is set in IBM Plex — serif, sans and mono from one design, so a
+report title, the sentence under it and the accession number beside it are one
+voice at three registers rather than three strangers in a row. The four files
+are served by the portal itself and not by a font host: a patient portal that
+fetches a stylesheet from a third party tells that third party who is reading a
+report and when, and one on a hospital network with no way out would fall back
+to system defaults without saying so. They are in
+[`wwwroot/fonts`](src/Portal.Web/wwwroot/fonts), with the SIL Open Font Licence
+beside them, and a check fetches every one of them — a font that does not load
+is invisible, and the page renders in something else with nobody told.
 
 The dialog is an enhancement and not a mechanism: every Open is a real link to
 the real document and opens in its own tab on its own. Turn the script off and

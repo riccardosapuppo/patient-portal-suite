@@ -33,9 +33,69 @@
     identifier: an accession number is a code, it gets read out over a
     telephone, and the digits have to be told apart.
 
-    Nothing is fetched and nothing animates on load. This is read by people who
-    are worried, on an old phone, in a corridor.
+    Nothing is fetched from anywhere else and nothing animates on load. This is
+    read by people who are worried, on an old phone, in a corridor.
 */
+
+/*
+    ── The typeface ─────────────────────────────────────────────────────────────
+
+    One family in three cuts, served by the portal itself.
+
+    The page was set in whatever the machine called its system sans and its
+    system serif, which means it was set differently on every machine and
+    designed for none of them. IBM Plex is drawn for exactly this: institutional
+    work, screens, and long stretches of somebody else's data. Its serif, sans
+    and mono are one design, so the report title, the sentence under it and the
+    accession number beside it are the same voice at three registers rather than
+    three strangers in a row.
+
+    Served from this repository and not from a font host. A patient portal that
+    fetches a stylesheet from a third party tells that third party who is
+    reading a report and when; and a portal on a hospital network with no way
+    out to the internet would fall back silently to the system stack, which is
+    the same class of failure as everything else here -- nothing breaks, it just
+    quietly stops being what it said it was. Four files, ninety-seven kilobytes,
+    with the licence beside them.
+
+    Every family still names a fallback stack. A font that fails to load is
+    invisible: the page renders, in something else, and nobody is told. There is
+    a check that every file named here answers.
+*/
+
+@font-face {
+    font-family: 'Plex Sans';
+    font-style: normal;
+
+    /* A variable face: one file covers the whole range this page asks for. */
+    font-weight: 100 700;
+    font-display: swap;
+    src: url('fonts/plex-sans.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Plex Serif';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('fonts/plex-serif-600.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Plex Mono';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('fonts/plex-mono.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Plex Mono';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('fonts/plex-mono-600.woff2') format('woff2');
+}
 
 :root {
     --ground: #eceeea;
@@ -63,9 +123,9 @@
     --lift: 0 1px 2px rgb(16 32 26 / 6%), 0 8px 24px rgb(16 32 26 / 7%);
     --lift-high: 0 2px 4px rgb(16 32 26 / 8%), 0 14px 34px rgb(16 32 26 / 11%);
 
-    --read: Constantia, 'Iowan Old Style', Charter, 'Sitka Text', Georgia, serif;
-    --ui: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-    --mono: ui-monospace, 'Cascadia Mono', 'SF Mono', Consolas, 'Liberation Mono', monospace;
+    --read: 'Plex Serif', Constantia, 'Iowan Old Style', Charter, Georgia, serif;
+    --ui: 'Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --mono: 'Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
 
     --hold: min(48rem, 100%);
 
@@ -90,8 +150,12 @@ body {
     margin: 0;
     background: var(--ground);
     color: var(--ink);
-    font: 1rem/1.6 var(--ui);
+    font: 1rem/1.62 var(--ui);
     -webkit-text-size-adjust: 100%;
+
+    /* Plex has real small figures and proper kerning; both are worth asking for. */
+    font-kerning: normal;
+    text-rendering: optimizeLegibility;
 }
 
 /*
@@ -127,7 +191,7 @@ header {
 
 .mark {
     display: inline-flex;
-    align-items: baseline;
+    align-items: center;
     gap: 0.5rem;
     font: 600 1.05rem/1 var(--ui);
     letter-spacing: -0.005em;
@@ -135,13 +199,21 @@ header {
     text-decoration: none;
 }
 
-.mark::before {
-    content: '';
-    width: 0.62rem;
-    height: 0.62rem;
-    border-radius: 2px;
-    background: #fff;
-    opacity: 0.85;
+/*
+    The mark is drawn in the markup, not made of a pseudo-element.
+
+    It used to be a small white square, which is what a mark is when nobody
+    has decided what it should be. Two shapes now, and they mean something:
+    a sheet with a seal on its corner. The middle disc is the band's own green
+    rather than a hole, so the seal reads as sitting on the sheet instead of
+    being punched through it -- and so the mark survives being put on anything
+    that is not the band.
+*/
+.mark-seal {
+    width: 1.5rem;
+    height: 1.5rem;
+    flex: none;
+    align-self: center;
 }
 
 .mark:hover {

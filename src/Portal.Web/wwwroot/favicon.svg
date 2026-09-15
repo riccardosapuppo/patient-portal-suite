@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Patient portal">
+    <!--
+        The same mark the header carries, on a ground of its own so that it
+        reads in a browser tab: a sheet, and a seal on the corner of it.
+        A document that is addressed to one person and to nobody else is the
+        whole of what this portal is for.
+    -->
+    <rect width="32" height="32" rx="7" fill="#0f5638" />
+    <rect x="7" y="5.5" width="13" height="16.5" rx="2.2"
+          fill="none" stroke="#ffffff" stroke-width="2.2" />
+    <circle cx="21" cy="23" r="6.2" fill="#0f5638" />
+    <circle cx="21" cy="23" r="4.3" fill="#ffffff" />
+</svg>

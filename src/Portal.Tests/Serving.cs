@@ -2,6 +2,8 @@ namespace Portal.Tests;
 
 using System.Net;
 using System.Net.Http.Headers;
+using System.Text;
+using System.Text.RegularExpressions;
 
 using Microsoft.AspNetCore.Mvc.Testing;
 
@@ -74,6 +76,68 @@ public class Serving : IClassFixture<WebApplicationFactory<Program>>
         // this one: no body, and the browser uses what it already has.
         Assert.Equal(HttpStatusCode.NotModified, second.StatusCode);
         Assert.Equal(0, second.Content.Headers.ContentLength ?? 0);
+    }
+
+    [Fact]
+    public async Task EveryFontTheStylesheetNamesActuallyAnswers()
+    {
+        // A font that does not load is invisible. The page renders, in whatever
+        // the machine had lying about, and nobody is told -- not the reader,
+        // not the log, not the build. Rename a file, move a folder, or leave one
+        // out of the publish, and the portal quietly goes back to being set in
+        // system defaults while every check that looks at markup stays green.
+        //
+        // So the stylesheet is read as the browser reads it, and every file it
+        // names is fetched.
+        using var browser = portal.CreateClient();
+
+        var sheet = await browser.GetStringAsync("/portal.css");
+        var named = Regex.Matches(sheet, @"url\('([^']+)'\)")
+            .Select(one => one.Groups[1].Value)
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+
+        // Nothing named is a pass by finding nothing, which is the failure this
+        // whole file is about.
+        Assert.NotEmpty(named);
+
+        foreach (var file in named)
+        {
+            using var answer = await browser.GetAsync($"/{file}");
+
+            Assert.True(
+                answer.StatusCode == HttpStatusCode.OK,
+                $"The stylesheet asks for {file} and the portal answers {(int)answer.StatusCode}. "
+                + "Nothing would have said so: the page renders in something else.");
+
+            // And it has to be a font rather than, say, an error page with a
+            // helpful status code on it.
+            var bytes = await answer.Content.ReadAsByteArrayAsync();
+
+            Assert.True(
+                bytes.Length > 4 && Encoding.ASCII.GetString(bytes, 0, 4) == "wOF2",
+                $"{file} answered {bytes.Length} bytes that do not begin with a woff2 signature.");
+        }
+    }
+
+    [Fact]
+    public async Task ThePortalHasAMarkOfItsOwn()
+    {
+        using var browser = portal.CreateClient();
+
+        // In the tab.
+        using var icon = await browser.GetAsync("/favicon.svg");
+
+        Assert.Equal(HttpStatusCode.OK, icon.StatusCode);
+        Assert.Contains("<svg", await icon.Content.ReadAsStringAsync(), StringComparison.Ordinal);
+
+        // And on the page, drawn rather than fetched, so it is the band's own
+        // colour wherever the band is.
+        var page = await browser.GetStringAsync("/SignIn");
+
+        Assert.Contains("favicon.svg", page, StringComparison.Ordinal);
+        Assert.Contains("mark-seal", page, StringComparison.Ordinal);
+        Assert.Contains("currentColor", page, StringComparison.Ordinal);
     }
 
     [Fact]

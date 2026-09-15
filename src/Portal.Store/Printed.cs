@@ -73,8 +73,15 @@ public static class Printed
         // arrives looking like the place it came from is one fewer thing for
         // somebody to have to check.
         page.Fill(0, Tall - 96, Wide, 96, 0.06, 0.34, 0.22);
-        page.Write(Margin, Tall - 52, Font.Bold, 17, "Patient portal", 1, 1, 1);
-        page.Write(Margin, Tall - 72, Font.Plain, 9.5, "Imaging and laboratory reporting", 0.72, 0.85, 0.79);
+
+        // The same two shapes the portal's header and its tab carry: a sheet,
+        // and a seal on the corner of it. A report that arrives looking like
+        // the place it came from is one fewer thing to have to check, and this
+        // is the part of that which survives being printed.
+        page.Mark(Margin, Tall - 66, 22, 1, 1, 1, 0.06, 0.34, 0.22);
+
+        page.Write(Margin + 40, Tall - 52, Font.Bold, 17, "Patient portal", 1, 1, 1);
+        page.Write(Margin + 40, Tall - 72, Font.Plain, 9.5, "Imaging and laboratory reporting", 0.72, 0.85, 0.79);
         page.Right(Wide - Margin, Tall - 52, Font.Bold, 11, id.Value, 1, 1, 1);
         page.Right(Wide - Margin, Tall - 72, Font.Plain, 9.5, released ? "Released" : "Draft", 0.72, 0.85, 0.79);
 
@@ -337,9 +344,64 @@ public static class Printed
         public void Right(double x, double y, Font font, double size, string text, double r, double g, double b) =>
             Write(x - (text.Length * size * 0.52), y, font, size, text, r, g, b);
 
+        /// <summary>The portal's mark: a sheet, and a seal on its corner.</summary>
+        /// <remarks>
+        /// Drawn rather than placed, because a raster image in a PDF is a
+        /// resolution somebody chose once and a stream to keep in step. Four
+        /// curves make the disc: a circle is not a primitive here, and the
+        /// constant is the usual one for fitting a bezier to a quarter turn.
+        /// </remarks>
+        /// <param name="x">Left edge of the sheet.</param>
+        /// <param name="y">Bottom edge of the sheet.</param>
+        /// <param name="size">How tall the sheet is, in points.</param>
+        /// <param name="r">Red of the mark itself, nought to one.</param>
+        /// <param name="g">Green of the mark.</param>
+        /// <param name="b">Blue of the mark.</param>
+        /// <param name="onR">Red of whatever it is drawn on, for the seal's gap.</param>
+        /// <param name="onG">Green of whatever it is drawn on.</param>
+        /// <param name="onB">Blue of whatever it is drawn on.</param>
+        public void Mark(
+            double x, double y, double size,
+            double r, double g, double b,
+            double onR, double onG, double onB)
+        {
+            // The same proportions the header and the tab are drawn at: a
+            // sheet four-fifths as wide as it is tall, and a seal sitting on
+            // its bottom-right corner rather than halfway up the side, which
+            // is what made the first one look like a bitten rectangle.
+            var wide = size * 0.8;
+
+            // The sheet, as an outline.
+            said.Append(CultureInfo.InvariantCulture, $"{Num(r)} {Num(g)} {Num(b)} RG {Num(size * 0.1)} w\n")
+                .Append(CultureInfo.InvariantCulture, $"{Num(x)} {Num(y)} {Num(wide)} {Num(size)} re S\n");
+
+            // The seal, twice: once in the ground colour so it does not sit on
+            // top of the sheet's line, once in the mark's own.
+            var seal = (X: x + wide + (size * 0.05), Y: y - (size * 0.05));
+
+            Disc(seal.X, seal.Y, size * 0.375, onR, onG, onB);
+            Disc(seal.X, seal.Y, size * 0.26, r, g, b);
+        }
+
         /// <summary>The operators, as the stream they are written into.</summary>
         /// <returns>The content stream.</returns>
         public string Stream() => said.ToString();
+
+        /// <summary>A filled circle, as the four curves a PDF draws one with.</summary>
+        private void Disc(double cx, double cy, double radius, double r, double g, double b)
+        {
+            // 0.5523 is the length, as a fraction of the radius, of the control
+            // arms that make a cubic bezier hug a quarter circle.
+            var k = radius * 0.5523;
+
+            said.Append(CultureInfo.InvariantCulture, $"{Num(r)} {Num(g)} {Num(b)} rg\n")
+                .Append(CultureInfo.InvariantCulture, $"{Num(cx + radius)} {Num(cy)} m\n")
+                .Append(CultureInfo.InvariantCulture, $"{Num(cx + radius)} {Num(cy + k)} {Num(cx + k)} {Num(cy + radius)} {Num(cx)} {Num(cy + radius)} c\n")
+                .Append(CultureInfo.InvariantCulture, $"{Num(cx - k)} {Num(cy + radius)} {Num(cx - radius)} {Num(cy + k)} {Num(cx - radius)} {Num(cy)} c\n")
+                .Append(CultureInfo.InvariantCulture, $"{Num(cx - radius)} {Num(cy - k)} {Num(cx - k)} {Num(cy - radius)} {Num(cx)} {Num(cy - radius)} c\n")
+                .Append(CultureInfo.InvariantCulture, $"{Num(cx + k)} {Num(cy - radius)} {Num(cx + radius)} {Num(cy - k)} {Num(cx + radius)} {Num(cy)} c\n")
+                .Append("f\n");
+        }
 
         /// <summary>
         /// A number as a PDF writes it: a point, never a comma, whatever the
